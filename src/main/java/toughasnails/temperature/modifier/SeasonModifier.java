@@ -14,7 +14,6 @@ import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.season.Season.SubSeason;
 import toughasnails.api.season.SeasonHelper;
 import toughasnails.api.temperature.Temperature;
-import toughasnails.api.config.GameplayOption;
 import toughasnails.init.ModConfig;
 import toughasnails.temperature.TemperatureDebugger;
 import toughasnails.temperature.TemperatureDebugger.Modifier;

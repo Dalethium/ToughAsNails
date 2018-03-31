@@ -1,7 +1,6 @@
 package toughasnails.potion;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
 import toughasnails.api.TANPotions;
 
 public class PotionColdResistance extends TANPotion {

@@ -2,12 +2,12 @@ package toughasnails.init;
 
 import static toughasnails.api.TANPotions.cold_resistance;
 import static toughasnails.api.TANPotions.cold_resistance_type;
-import static toughasnails.api.TANPotions.long_cold_resistance_type;
 import static toughasnails.api.TANPotions.heat_resistance;
 import static toughasnails.api.TANPotions.heat_resistance_type;
-import static toughasnails.api.TANPotions.long_heat_resistance_type;
 import static toughasnails.api.TANPotions.hyperthermia;
 import static toughasnails.api.TANPotions.hypothermia;
+import static toughasnails.api.TANPotions.long_cold_resistance_type;
+import static toughasnails.api.TANPotions.long_heat_resistance_type;
 import static toughasnails.api.TANPotions.thirst;
 
 import net.minecraft.potion.Potion;

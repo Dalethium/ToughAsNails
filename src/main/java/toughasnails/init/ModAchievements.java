@@ -7,9 +7,15 @@
  ******************************************************************************/
 package toughasnails.init;
 
-import static toughasnails.api.achievement.TANAchievements.*;
+import static toughasnails.api.achievement.TANAchievements.campfire_song;
+import static toughasnails.api.achievement.TANAchievements.hot_or_cold;
+import static toughasnails.api.achievement.TANAchievements.into_ice;
+import static toughasnails.api.achievement.TANAchievements.life_or_death;
+import static toughasnails.api.achievement.TANAchievements.that_time_of_year;
+import static toughasnails.api.achievement.TANAchievements.thirst_ender;
+import static toughasnails.api.achievement.TANAchievements.thirst_quencher;
+import static toughasnails.api.achievement.TANAchievements.year_one;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;

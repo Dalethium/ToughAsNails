@@ -29,8 +29,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import toughasnails.api.HealthHelper;
-import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.config.GameplayOption;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.init.ModConfig;
 
 public class MaxHealthHandler implements HealthHelper.IHeartAmountProvider {

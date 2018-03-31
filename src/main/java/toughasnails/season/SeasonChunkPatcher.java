@@ -91,7 +91,7 @@ public class SeasonChunkPatcher {
 	}
 
 	private void addChunkIfGenerated(World world, ChunkPos pos) {
-		if (!world.isChunkGeneratedAt(pos.chunkXPos, pos.chunkZPos)) return;
+		if (!world.isChunkGeneratedAt(pos.x, pos.z)) return;
 		enqueueChunkOnce(world, pos);
 	}
 
@@ -204,7 +204,7 @@ public class SeasonChunkPatcher {
 
 			SeasonSavedData seasonData = SeasonHandler.getSeasonSavedData(chunk.getWorld());
 			ChunkData chunkData = seasonData.getStoredChunkData(chunk, true);
-			if (chunk.unloaded) {
+			if (!chunk.isLoaded()) {
 				internRemoveFromQueue(chunkData);
 
 				statisticsRejectedPendingAmount++;
@@ -480,7 +480,7 @@ public class SeasonChunkPatcher {
 
 		public Chunk getChunk() {
 			if (chunk == null) {
-				chunk = world.getChunkFromChunkCoords(key.getPos().chunkXPos, key.getPos().chunkZPos);
+				chunk = world.getChunkFromChunkCoords(key.getPos().x, key.getPos().z);
 			}
 			return chunk;
 		}

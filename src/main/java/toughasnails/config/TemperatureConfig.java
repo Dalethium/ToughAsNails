@@ -7,10 +7,10 @@
  ******************************************************************************/
 package toughasnails.config;
 
+import java.io.File;
+
 import toughasnails.api.config.TemperatureOption;
 import toughasnails.core.ToughAsNails;
-
-import java.io.File;
 
 public class TemperatureConfig extends ConfigHandler {
 

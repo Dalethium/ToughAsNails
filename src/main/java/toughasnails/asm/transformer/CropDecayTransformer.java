@@ -24,7 +24,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.google.common.collect.Lists;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.classloading.FMLForgePlugin;
 import toughasnails.asm.ASMHelper;
 import toughasnails.asm.ObfHelper;
 

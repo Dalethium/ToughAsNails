@@ -14,8 +14,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import toughasnails.api.HealthHelper;
-import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.config.GameplayOption;
+import toughasnails.api.config.SyncedConfig;
 
 public class HealthOverlayHandler {
 

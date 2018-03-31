@@ -18,11 +18,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
+import toughasnails.api.config.SeasonsOption;
 import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.season.Season;
 import toughasnails.api.season.Season.SubSeason;
 import toughasnails.api.season.SeasonHelper;
-import toughasnails.api.config.SeasonsOption;
 
 public class RandomUpdateHandler {
 
@@ -44,8 +44,8 @@ public class RandomUpdateHandler {
 				for (Iterator<Chunk> iterator = world.getPersistentChunkIterable(world.getPlayerChunkMap().getChunkIterator());
 						iterator.hasNext();) {
 					Chunk chunk = (Chunk) iterator.next();
-					int x = chunk.xPosition * 16;
-					int z = chunk.zPosition * 16;
+					int x = chunk.x * 16;
+					int z = chunk.z * 16;
 
 					int rand;
 					switch (subSeason) {

@@ -18,7 +18,6 @@ import toughasnails.api.config.SeasonsOption;
 import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.season.Season;
 import toughasnails.api.season.SeasonHelper;
-import toughasnails.api.config.GameplayOption;
 
 public class StopSpawnHandler {
 

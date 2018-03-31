@@ -21,13 +21,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.TANCapabilities;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.config.TemperatureOption;
 import toughasnails.api.temperature.Temperature;
 import toughasnails.api.temperature.TemperatureScale;
 import toughasnails.api.temperature.TemperatureScale.TemperatureRange;
-import toughasnails.api.config.GameplayOption;
 import toughasnails.temperature.TemperatureHandler;
 
 @SideOnly(Side.CLIENT)

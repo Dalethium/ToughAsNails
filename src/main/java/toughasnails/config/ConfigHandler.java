@@ -7,6 +7,8 @@
  ******************************************************************************/
 package toughasnails.config;
 
+import java.io.File;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -14,8 +16,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import toughasnails.api.config.ISyncedOption;
 import toughasnails.api.config.SyncedConfig;
 import toughasnails.core.ToughAsNails;
-
-import java.io.File;
 
 public abstract class ConfigHandler {
 

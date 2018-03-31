@@ -18,12 +18,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.TANPotions;
+import toughasnails.api.config.GameplayOption;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.stat.capability.IThirst;
 import toughasnails.api.thirst.IDrink;
 import toughasnails.api.thirst.ThirstHelper;
-import toughasnails.api.config.GameplayOption;
 import toughasnails.thirst.ThirstHandler;
 
 public abstract class ItemDrink<T extends Enum<T> & IDrink> extends Item {

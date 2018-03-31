@@ -26,9 +26,6 @@ import static toughasnails.api.item.TANItems.wool_chestplate;
 import static toughasnails.api.item.TANItems.wool_helmet;
 import static toughasnails.api.item.TANItems.wool_leggings;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;

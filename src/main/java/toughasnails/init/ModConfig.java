@@ -9,11 +9,9 @@ package toughasnails.init;
 
 import java.io.File;
 
-import net.minecraftforge.common.MinecraftForge;
 import toughasnails.config.GameplayConfig;
 import toughasnails.config.SeasonsConfig;
 import toughasnails.config.TemperatureConfig;
-import toughasnails.core.ToughAsNails;
 
 public class ModConfig {
 

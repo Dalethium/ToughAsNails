@@ -12,9 +12,9 @@ public class TANBlocks {
 
 	public static Block rain_collector;
 
-	public static Block torch_new;
+	//public static Block torch_new;
 
-	public static Block glowstone_torch;
+	//public static Block glowstone_torch;
 
 	public static Block dead_crops;
 

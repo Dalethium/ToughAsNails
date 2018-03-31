@@ -10,11 +10,11 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.TANCapabilities;
+import toughasnails.api.config.GameplayOption;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.stat.StatHandlerBase;
 import toughasnails.api.stat.capability.IThirst;
-import toughasnails.api.config.GameplayOption;
 import toughasnails.network.message.MessageUpdateStat;
 
 public class ThirstHandler extends StatHandlerBase implements IThirst {

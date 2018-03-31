@@ -87,7 +87,7 @@ public class ChunkKey {
 		}
 
 		public ChunkPos getOffset(ChunkPos pos) {
-			return new ChunkPos(pos.chunkXPos + dX, pos.chunkZPos + dZ);
+			return new ChunkPos(pos.x + dX, pos.z + dZ);
 		}
 
 		public ChunkKey getOffset(ChunkKey key) {

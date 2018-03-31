@@ -8,7 +8,7 @@ import toughasnails.season.ChunkKey;
 public class ChunkUtils {
 
 	public static boolean isChunkUnloadedOrUnpopulated(World world, ChunkPos pos) {
-		Chunk chunk = world.getChunkProvider().getLoadedChunk(pos.chunkXPos, pos.chunkZPos);
+		Chunk chunk = world.getChunkProvider().getLoadedChunk(pos.x, pos.z);
 		return chunk == null || !chunk.isTerrainPopulated();
 	}
 

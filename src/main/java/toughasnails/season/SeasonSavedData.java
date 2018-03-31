@@ -228,7 +228,7 @@ public class SeasonSavedData extends WorldSavedData {
 			Chunk curChunk = chunkData.getChunk();
 			if (curChunk != null) {
 				if (curChunk != chunk) {
-					if (!curChunk.unloaded) ToughAsNails.logger.error("Chunk mismatching in SeasonSavedData.getStoredChunkData .");
+					if (curChunk.isLoaded()) ToughAsNails.logger.error("Chunk mismatching in SeasonSavedData.getStoredChunkData .");
 					curChunk = null;
 				}
 			}
@@ -306,8 +306,8 @@ public class SeasonSavedData extends WorldSavedData {
 
 		@Override
 		public void writeToStream(ObjectOutputStream os) throws IOException {
-			os.writeInt(key.getPos().chunkXPos);
-			os.writeInt(key.getPos().chunkZPos);
+			os.writeInt(key.getPos().x);
+			os.writeInt(key.getPos().z);
 			os.writeInt(key.getDimension());
 			os.writeLong(lastPatchedTime);
 		}

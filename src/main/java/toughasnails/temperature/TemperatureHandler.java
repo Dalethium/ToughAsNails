@@ -1,15 +1,13 @@
 package toughasnails.temperature;
 
-import static toughasnails.api.temperature.TemperatureScale.*;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-
 import com.google.common.collect.Sets;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,16 +16,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.TANCapabilities;
 import toughasnails.api.TANPotions;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.config.TemperatureOption;
 import toughasnails.api.stat.StatHandlerBase;
 import toughasnails.api.stat.capability.ITemperature;
 import toughasnails.api.temperature.Temperature;
 import toughasnails.api.temperature.TemperatureScale;
 import toughasnails.api.temperature.TemperatureScale.TemperatureRange;
-import toughasnails.api.config.GameplayOption;
 import toughasnails.network.message.MessageUpdateStat;
 import toughasnails.temperature.TemperatureDebugger.Modifier;
 import toughasnails.temperature.modifier.AltitudeModifier;
