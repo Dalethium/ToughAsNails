@@ -8,11 +8,14 @@
 package toughasnails.api.season;
 
 import net.minecraft.world.World;
-import toughasnails.config.GameplayOption;
-import toughasnails.config.SyncedConfigHandler;
+import toughasnails.api.config.SeasonsOption;
+import toughasnails.api.config.SyncedConfig;
+import toughasnails.api.config.GameplayOption;
 
 public class SeasonHelper 
 {
+    public static ISeasonDataProvider dataProvider;
+
     /** 
      * Obtains data about the state of the season cycle in the world. This works both on
      * the client and the server.
@@ -20,21 +23,14 @@ public class SeasonHelper
     public static ISeasonData getSeasonData(World world)
     {
         ISeasonData data;
-        
-        try
+
+        if (!world.isRemote)
         {
-            if (!world.isRemote)
-            {
-                data = (ISeasonData)Class.forName("toughasnails.handler.season.SeasonHandler").getMethod("getServerSeasonData", World.class).invoke(null, world);
-            }
-            else
-            {
-                data = (ISeasonData)Class.forName("toughasnails.handler.season.SeasonHandler").getMethod("getClientSeasonData").invoke(null);
-            }
+            data = dataProvider.getServerSeasonData(world);
         }
-        catch (Exception e)
+        else
         {
-            throw new RuntimeException("An error occurred obtaining season data", e);
+            data = dataProvider.getClientSeasonData();
         }
 
         return data;
@@ -51,6 +47,12 @@ public class SeasonHelper
     public static boolean canSnowAtTempInSeason(Season season, float temperature)
     {
         //If we're in winter, the temperature can be anything equal to or below 0.7
-        return temperature < 0.15F || (season == Season.WINTER && temperature <= 0.7F && SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_SEASONS));
+        return temperature < 0.15F || (season == Season.WINTER && temperature <= 0.7F && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS));
+    }
+
+    public interface ISeasonDataProvider
+    {
+        ISeasonData getServerSeasonData(World world);
+        ISeasonData getClientSeasonData();
     }
 }

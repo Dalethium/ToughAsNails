@@ -1,12 +1,17 @@
 package toughasnails.api.temperature;
 
+import toughasnails.api.config.SyncedConfig;
+import toughasnails.api.config.TemperatureOption;
+
 public class TemperatureScale
 {
     private static int scaleTotal = generateTotalScale();
     private static int[] rangeStarts = generateRangeStarts();
     
-    /**Get the temperature range this position in the overall temperature scale is
-     * located within*/
+    /**
+     * Get the temperature range this position in the overall temperature scale is
+     * located within
+     * */
     public static TemperatureRange getTemperatureRange(int scalePos)
     {
         //Ensure the scale position is within the allowed values
@@ -52,17 +57,59 @@ public class TemperatureScale
         return isScalePosInRange(scalePos, range, range);
     }
     
-    /**Returns the position in the overall temperature scale of this range*/
+    /**
+     * Returns the position in the overall temperature scale of this range
+     */
     public static int getRangeStart(TemperatureRange range)
     {
         return rangeStarts[range.ordinal()];
     }
-    
+
+    public static int getRateForTemperatures(int currentScalePos, int targetScalePos)
+    {
+        // the greater the difference between the current temperature and the target temperature,
+        // the faster the rate should be
+        double rateDelta = Math.abs((double)(currentScalePos - targetScalePos) / (double)getScaleTotal());
+
+        // temperature can't change at a rate faster than every second
+        return Math.max(20, getAdjustedBaseRate(currentScalePos) - (int)(rateDelta * (double)getMaxRateModifier()));
+    }
+
+    public static int getAdjustedBaseRate(int currentScalePos)
+    {
+        int ret = getBaseTemperatureChangeTicks();
+        TemperatureRange currentRange = getTemperatureRange(currentScalePos);
+
+        // the base rate is 10-15 seconds less in extremities.
+        // the closer to the start of the range, the faster it is
+        if (currentRange == TemperatureRange.ICY)
+        {
+            ret -= (200 * getRangeDelta(currentScalePos, false));
+        }
+        else if (currentRange == TemperatureRange.HOT)
+        {
+            ret -= (200 * getRangeDelta(currentScalePos, true));
+        }
+        return ret;
+    }
+
     public static int getScaleTotal()
     {
         return scaleTotal;
     }
-    
+
+    public static int getScaleMidpoint() { return TemperatureScale.getScaleTotal() / 2; }
+
+    public static int getBaseTemperatureChangeTicks()
+    {
+        return SyncedConfig.getIntValue(TemperatureOption.BASE_TEMPERATURE_CHANGE_TICKS);
+    }
+
+    public static int getMaxRateModifier()
+    {
+        return SyncedConfig.getIntValue(TemperatureOption.MAX_RATE_MODIFIER);
+    }
+
     private static int generateTotalScale()
     {
         int totalRange = 0;
@@ -92,8 +139,8 @@ public class TemperatureScale
         
         return generatedStarts;
     }
-    
-    public static enum TemperatureRange
+
+    public enum TemperatureRange
     {
         ICY(6),
         COOL(5),

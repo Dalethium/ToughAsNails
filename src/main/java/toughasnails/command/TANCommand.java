@@ -12,13 +12,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.TANCapabilities;
 import toughasnails.api.TANPotions;
+import toughasnails.api.config.TemperatureOption;
 import toughasnails.api.season.Season.SubSeason;
 import toughasnails.api.temperature.Temperature;
 import toughasnails.api.temperature.TemperatureScale;
-import toughasnails.config.GameplayOption;
-import toughasnails.config.SyncedConfigHandler;
+import toughasnails.api.config.GameplayOption;
+import toughasnails.api.config.SeasonsOption;
 import toughasnails.handler.season.SeasonHandler;
 import toughasnails.season.SeasonSavedData;
 import toughasnails.season.SeasonTime;
@@ -78,7 +80,7 @@ public class TANCommand extends CommandBase
         TemperatureHandler temperatureStats = (TemperatureHandler)player.getCapability(TANCapabilities.TEMPERATURE, null);
         TemperatureDebugger debugger = temperatureStats.debugger;
 
-        if (SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_TEMPERATURE))
+        if (SyncedConfig.getBooleanValue(TemperatureOption.ENABLE_TEMPERATURE))
     	{
         	debugger.setGuiVisible(!debugger.isGuiVisible(), player);
     	}
@@ -95,7 +97,7 @@ public class TANCommand extends CommandBase
         int newTemp = parseInt(args[1], 0, TemperatureScale.getScaleTotal());
         Temperature playerTemp = temperatureStats.getTemperature();
 
-        if (SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_TEMPERATURE))
+        if (SyncedConfig.getBooleanValue(TemperatureOption.ENABLE_TEMPERATURE))
     	{
 	        //Remove any existing potion effects for hypo/hyperthermia
 	        player.removePotionEffect(TANPotions.hypothermia);
@@ -128,12 +130,12 @@ public class TANCommand extends CommandBase
             }
         }
         
-        if (SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_SEASONS))
+        if (SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS))
     	{
 	        if (newSeason != null)
 	        {
 		            SeasonSavedData seasonData = SeasonHandler.getSeasonSavedData(player.world);
-		            seasonData.seasonCycleTicks = SeasonTime.DAY_TICKS * SeasonTime.SUB_SEASON_DURATION * newSeason.ordinal();
+		            seasonData.seasonCycleTicks = SeasonTime.ZERO.getSubSeasonDuration() * newSeason.ordinal();
 		            seasonData.markDirty();
 		            SeasonHandler.sendSeasonUpdate(player.world);
 		            sender.sendMessage(new TextComponentTranslation("commands.toughasnails.setseason.success", args[1]));

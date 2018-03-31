@@ -9,26 +9,21 @@ package toughasnails.temperature.modifier;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import toughasnails.api.config.SeasonsOption;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.season.Season.SubSeason;
 import toughasnails.api.season.SeasonHelper;
 import toughasnails.api.temperature.Temperature;
-import toughasnails.config.GameplayOption;
-import toughasnails.config.SyncedConfigHandler;
+import toughasnails.api.config.GameplayOption;
+import toughasnails.init.ModConfig;
 import toughasnails.temperature.TemperatureDebugger;
 import toughasnails.temperature.TemperatureDebugger.Modifier;
-import toughasnails.temperature.TemperatureTrend;
 
 public class SeasonModifier extends TemperatureModifier
 {
     public SeasonModifier(TemperatureDebugger debugger) 
     {
         super(debugger);
-    }
-    
-    @Override
-    public int modifyChangeRate(World world, EntityPlayer player, int changeRate, TemperatureTrend trend) 
-    {
-        return changeRate;
     }
 
     @Override
@@ -37,7 +32,7 @@ public class SeasonModifier extends TemperatureModifier
         int temperatureLevel = temperature.getRawValue();
         SubSeason season = SeasonHelper.getSeasonData(world).getSubSeason();
         
-        if (!(SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_SEASONS)))
+        if (!(SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)))
         {
         	season = SubSeason.MID_SUMMER;
         }
@@ -48,25 +43,53 @@ public class SeasonModifier extends TemperatureModifier
         {
 	        switch (season)
 	        {
-	        case MID_WINTER: case LATE_WINTER:
-	            temperatureLevel -= 6;
-	            break;
-	        
-	        case EARLY_SPRING: case EARLY_WINTER:
-	            temperatureLevel -= 4;
+	        case EARLY_SPRING:
+	            temperatureLevel += ModConfig.temperature.earlySpringModifier;
+                break;
+
+			case MID_SPRING:
+				temperatureLevel += ModConfig.temperature.midSpringModifier;
+				break;
+                
+	        case LATE_SPRING:
+	            temperatureLevel += ModConfig.temperature.lateSpringModifier;
+                break;
+                
+	        case EARLY_SUMMER:
+	            temperatureLevel += ModConfig.temperature.earlySummerModifier;
 	            break;
 	            
-	        case MID_SPRING: case LATE_AUTUMN:
-	            temperatureLevel -= 2;
-	            break;
-	            
-	        case MID_SUMMER: case EARLY_AUTUMN:
-	            temperatureLevel += 2;
+	        case MID_SUMMER:
+	            temperatureLevel += ModConfig.temperature.midSummerModifier;
 	            break;
 	            
 	        case LATE_SUMMER:
-	            temperatureLevel += 4;
+	            temperatureLevel += ModConfig.temperature.lateSummerModifier;
 	            break;
+	            
+	        case EARLY_AUTUMN:
+	            temperatureLevel += ModConfig.temperature.earlyAutumnModifier;
+	            break;
+
+			case MID_AUTUMN:
+				temperatureLevel += ModConfig.temperature.midAutumnModifier;
+				break;
+	            
+	        case LATE_AUTUMN:
+	            temperatureLevel += ModConfig.temperature.lateAutumnModifier;
+	            break;
+	            
+	        case EARLY_WINTER:
+	            temperatureLevel += ModConfig.temperature.earlyWinterModifier;
+	            break;
+	            
+	        case MID_WINTER:
+	            temperatureLevel += ModConfig.temperature.midWinterModifier;
+	            break;
+	            
+	        case LATE_WINTER:
+                temperatureLevel += ModConfig.temperature.lateWinterModifier;
+                break;
 	            
 	        default:
 	            break;

@@ -5,9 +5,23 @@
  * 
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
  ******************************************************************************/
-package toughasnails.temperature;
+package toughasnails.api.config;
 
-public enum TemperatureTrend
+public enum GameplayOption implements ISyncedOption
 {
-    STILL, INCREASING, DECREASING;
+    ENABLE_LOWERED_STARTING_HEALTH("Enable Lowered Starting Health"),
+    ENABLE_THIRST("Enable Thirst");
+
+    private final String optionName;
+    
+    private GameplayOption(String name)
+    {
+        this.optionName = name;
+    }
+    
+    @Override
+    public String getOptionName()
+    {
+        return this.optionName;
+    }
 }

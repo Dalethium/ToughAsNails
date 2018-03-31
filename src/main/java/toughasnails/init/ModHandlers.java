@@ -7,7 +7,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import toughasnails.config.GameplayOption;
+import toughasnails.api.HealthHelper;
+import toughasnails.api.season.SeasonHelper;
 import toughasnails.config.SyncedConfigHandler;
 import toughasnails.handler.AchievementEventHandler;
 import toughasnails.handler.ExtendedStatHandler;
@@ -16,11 +17,12 @@ import toughasnails.handler.health.HealthOverlayHandler;
 import toughasnails.handler.health.MaxHealthHandler;
 import toughasnails.handler.season.ProviderIceHandler;
 import toughasnails.handler.season.RandomUpdateHandler;
+import toughasnails.handler.season.SeasonCropHandler;
 import toughasnails.handler.season.SeasonHandler;
 import toughasnails.handler.season.SeasonSleepHandler;
 import toughasnails.handler.season.StopSpawnHandler;
 import toughasnails.handler.season.WeatherFrequencyHandler;
-import toughasnails.handler.temperature.TemperatureDebugOverlayHandler;
+import toughasnails.handler.temperature.TemperatureStatTableHandler;
 import toughasnails.handler.temperature.TemperatureOverlayHandler;
 import toughasnails.handler.thirst.FillBottleHandler;
 import toughasnails.handler.thirst.ThirstOverlayHandler;
@@ -31,6 +33,8 @@ import toughasnails.util.SeasonColourUtil;
 
 public class ModHandlers
 {
+    private static final SeasonHandler SEASON_HANDLER = new SeasonHandler();
+
     public static void init()
     {
         PacketHandler.init();
@@ -41,12 +45,16 @@ public class ModHandlers
         MinecraftForge.EVENT_BUS.register(new ThirstStatHandler());
         MinecraftForge.EVENT_BUS.register(new VanillaDrinkHandler());
 	    MinecraftForge.EVENT_BUS.register(new FillBottleHandler());
-	    MinecraftForge.EVENT_BUS.register(new MaxHealthHandler());
+        MaxHealthHandler maxHealthHandler = new MaxHealthHandler();
+        MinecraftForge.EVENT_BUS.register(maxHealthHandler);
+        HealthHelper.heartProvider = maxHealthHandler;
 
         //Handlers for functionality related to seasons
-        MinecraftForge.EVENT_BUS.register(new SeasonHandler());
+        MinecraftForge.EVENT_BUS.register(SEASON_HANDLER);
+        SeasonHelper.dataProvider = SEASON_HANDLER;
         MinecraftForge.EVENT_BUS.register(new RandomUpdateHandler());
         MinecraftForge.TERRAIN_GEN_BUS.register(new ProviderIceHandler());
+        MinecraftForge.EVENT_BUS.register(new SeasonCropHandler());
         MinecraftForge.EVENT_BUS.register(new SeasonSleepHandler());
         StopSpawnHandler stopSpawnHandler = new StopSpawnHandler();
         MinecraftForge.EVENT_BUS.register(stopSpawnHandler);
@@ -57,7 +65,7 @@ public class ModHandlers
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             MinecraftForge.EVENT_BUS.register(new TemperatureOverlayHandler());
-            MinecraftForge.EVENT_BUS.register(new TemperatureDebugOverlayHandler());
+            MinecraftForge.EVENT_BUS.register(new TemperatureStatTableHandler());
             MinecraftForge.EVENT_BUS.register(new ThirstOverlayHandler());
             MinecraftForge.EVENT_BUS.register(new HealthOverlayHandler());
 

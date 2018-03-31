@@ -29,10 +29,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import toughasnails.api.HealthHelper;
-import toughasnails.config.GameplayOption;
-import toughasnails.config.SyncedConfigHandler;
+import toughasnails.api.config.SyncedConfig;
+import toughasnails.api.config.GameplayOption;
+import toughasnails.init.ModConfig;
 
-public class MaxHealthHandler 
+public class MaxHealthHandler implements HealthHelper.IHeartAmountProvider
 {
     //TODO: If the health config option is changed and the current health is lower
     //increase it to that new default
@@ -55,7 +56,7 @@ public class MaxHealthHandler
         AttributeModifier modifier = oldMaxHealthInstance.getModifier(HealthHelper.LIFEBLOOD_HEALTH_MODIFIER_ID);
         
         //Copy the lifeblood modifier from the 'old' player
-        if (SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH) && modifier != null)
+        if (SyncedConfig.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH) && modifier != null)
         { 
             Multimap<String, AttributeModifier> multimap = HashMultimap.<String, AttributeModifier>create();
             multimap.put(SharedMonsterAttributes.MAX_HEALTH.getName(), modifier);
@@ -70,7 +71,7 @@ public class MaxHealthHandler
         Minecraft minecraft = Minecraft.getMinecraft();
         IntegratedServer integratedServer = minecraft.getIntegratedServer();
         
-        if (SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH) && event.phase == Phase.END && integratedServer != null)
+        if (SyncedConfig.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH) && event.phase == Phase.END && integratedServer != null)
         {
             boolean gamePaused = Minecraft.getMinecraft().getConnection() != null && minecraft.isGamePaused();
             
@@ -100,7 +101,7 @@ public class MaxHealthHandler
         AttributeModifier modifier = maxHealthInstance.getModifier(HealthHelper.STARTING_HEALTH_MODIFIER_ID);
         
         //Don't update if the lowered starting health config option is disabled
-        if (!SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH))
+        if (!SyncedConfig.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH))
         {
             if (modifier != null)
             {
@@ -110,34 +111,17 @@ public class MaxHealthHandler
             return;
         }
         
-        double difficultyHealthDecrement;
+        int startingHealth = getStartingHearts(difficulty);
+        double difficultyHealthDecrement = -20 + startingHealth * 2;
 
-        switch (difficulty)
-        {
-        case EASY:
-            difficultyHealthDecrement = -6.0D;
-            break;
-
-        case NORMAL:
-            difficultyHealthDecrement = -10.0D;
-            break;
-
-        case HARD:
-            difficultyHealthDecrement = -14.0D;
-            break;
-
-        default:
-            difficultyHealthDecrement = 0.0D;
-            break;
-        }
-        
         double lifebloodHearts = HealthHelper.getLifebloodHearts(player) * 2;
         double overallHealthDecrement = difficultyHealthDecrement + lifebloodHearts;
-        
-        //Ensure that the total hearts is never above 20 when the difficulty is changed
-        if (overallHealthDecrement > 0.0D)
+        double extraHealth = getMaxHearts() * 2 - 20;
+
+        //Ensure that the total hearts is never above max hearts when the difficulty is changed
+        if (overallHealthDecrement > extraHealth)
         {
-            difficultyHealthDecrement -= overallHealthDecrement;
+            difficultyHealthDecrement -= overallHealthDecrement - extraHealth;
         }
 
         //If the player doesn't have a modifier for a lowered starting health, add one
@@ -154,6 +138,31 @@ public class MaxHealthHandler
             {
                 player.setHealth(player.getMaxHealth());
             }
+        }
+    }
+
+    @Override
+    public int getMaxHearts()
+    {
+        return ModConfig.gameplay.maxHearts;
+    }
+
+    @Override
+    public int getStartingHearts(EnumDifficulty difficulty)
+    {
+        switch(difficulty)
+        {
+            case EASY:
+                return ModConfig.gameplay.easyStartingHearts;
+
+            case NORMAL:
+                return ModConfig.gameplay.normalStartingHearts;
+
+            case HARD:
+                return ModConfig.gameplay.hardStartingHearts;
+                
+            default:
+                return 10;
         }
     }
 }

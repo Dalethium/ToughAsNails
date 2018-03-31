@@ -18,11 +18,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
+import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.season.Season;
 import toughasnails.api.season.Season.SubSeason;
-import toughasnails.config.GameplayOption;
-import toughasnails.config.SyncedConfigHandler;
 import toughasnails.api.season.SeasonHelper;
+import toughasnails.api.config.SeasonsOption;
 
 public class RandomUpdateHandler 
 {
@@ -36,7 +36,7 @@ public class RandomUpdateHandler
             Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
             SubSeason subSeason = SeasonHelper.getSeasonData(world).getSubSeason();
             
-            if (!(SyncedConfigHandler.getBooleanValue(GameplayOption.ENABLE_SEASONS)))
+            if (!(SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)))
             {
             	season = Season.SUMMER;
             	subSeason = SubSeason.MID_SUMMER;
