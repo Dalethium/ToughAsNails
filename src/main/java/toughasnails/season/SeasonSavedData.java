@@ -25,368 +25,300 @@ import toughasnails.core.ToughAsNails;
 import toughasnails.util.DataUtils;
 import toughasnails.util.IDataStorable;
 
-public class SeasonSavedData extends WorldSavedData
-{
-    public static final String DATA_IDENTIFIER = "seasons";
+public class SeasonSavedData extends WorldSavedData {
 
-    public int seasonCycleTicks;
+	public static final String DATA_IDENTIFIER = "seasons";
 
-    private boolean isLastSnowyState = false;
-    private boolean isLastRainyState = false;
-    public List<WeatherJournalEvent> journal = new ArrayList<WeatherJournalEvent>();
+	public int seasonCycleTicks;
 
-    public HashMap<ChunkKey, ChunkData> managedChunks = new HashMap<ChunkKey, ChunkData>();
+	private boolean isLastSnowyState = false;
 
-    public SeasonSavedData()
-    {
-        this(DATA_IDENTIFIER);
-    }
+	private boolean isLastRainyState = false;
 
-    // This specific constructor is required for saving to occur
-    public SeasonSavedData(String identifier)
-    {
-        super(identifier);
-    }
+	public List<WeatherJournalEvent> journal = new ArrayList<WeatherJournalEvent>();
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt)
-    {
-        this.seasonCycleTicks = nbt.getInteger("SeasonCycleTicks");
-        try
-        {
-            this.journal = DataUtils.toListStorable(nbt.getByteArray("WeatherJournal"), WeatherJournalEvent.class);
-        }
-        catch (IOException e)
-        {
-            ToughAsNails.logger.error("Couldn't retrieve weather journal. Use a clear one.", e);
-            this.journal = new ArrayList<WeatherJournalEvent>();
-        }
+	public HashMap<ChunkKey, ChunkData> managedChunks = new HashMap<ChunkKey, ChunkData>();
 
-        try
-        {
-            List<ChunkDataStorage> timeStamps = DataUtils.toListStorable(nbt.getByteArray("ChunkExtraInfo"), ChunkDataStorage.class);
-            applyLastPatchedTimes(timeStamps);
-        }
-        catch (IOException e)
-        {
-            ToughAsNails.logger.error("Couldn't load chunk patch timestamps. Some chunks won't be in synch with season.", e);
-        }
+	public SeasonSavedData() {
+		this(DATA_IDENTIFIER);
+	}
 
-        determineLastState();
-    }
+	// This specific constructor is required for saving to occur
+	public SeasonSavedData(String identifier) {
+		super(identifier);
+	}
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
-    {
-        nbt.setInteger("SeasonCycleTicks", this.seasonCycleTicks);
-        try
-        {
-            nbt.setByteArray("WeatherJournal", DataUtils.toBytebufStorable(journal));
-        }
-        catch (IOException e)
-        {
-            ToughAsNails.logger.error("Couldn't store weather journal.", e);
-        }
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		this.seasonCycleTicks = nbt.getInteger("SeasonCycleTicks");
+		try {
+			this.journal = DataUtils.toListStorable(nbt.getByteArray("WeatherJournal"), WeatherJournalEvent.class);
+		} catch (IOException e) {
+			ToughAsNails.logger.error("Couldn't retrieve weather journal. Use a clear one.", e);
+			this.journal = new ArrayList<WeatherJournalEvent>();
+		}
 
-        try
-        {
-            nbt.setByteArray("ChunkExtraInfo", DataUtils.toBytebufStorable(toLastPatchedTimeStorable()));
-        }
-        catch (IOException e)
-        {
-            ToughAsNails.logger.error("Couldn't store chunk patch timestamps. Some chunks won't be in synch with season.", e);
-        }
+		try {
+			List<ChunkDataStorage> timeStamps = DataUtils.toListStorable(nbt.getByteArray("ChunkExtraInfo"), ChunkDataStorage.class);
+			applyLastPatchedTimes(timeStamps);
+		} catch (IOException e) {
+			ToughAsNails.logger.error("Couldn't load chunk patch timestamps. Some chunks won't be in synch with season.", e);
+		}
 
-        return nbt;
-    }
+		determineLastState();
+	}
 
-    private List<ChunkDataStorage> toLastPatchedTimeStorable()
-    {
-        int size = managedChunks.size();
-        ArrayList<ChunkDataStorage> result = new ArrayList<ChunkDataStorage>(size);
-        for (Map.Entry<ChunkKey, ChunkData> entry : managedChunks.entrySet())
-        {
-            result.add(new ChunkDataStorage(entry.getKey(), entry.getValue()));
-        }
-        return result;
-    }
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		nbt.setInteger("SeasonCycleTicks", this.seasonCycleTicks);
+		try {
+			nbt.setByteArray("WeatherJournal", DataUtils.toBytebufStorable(journal));
+		} catch (IOException e) {
+			ToughAsNails.logger.error("Couldn't store weather journal.", e);
+		}
 
-    private void applyLastPatchedTimes(List<ChunkDataStorage> list)
-    {
-        for (ChunkDataStorage entry : list)
-        {
-            ChunkData data = managedChunks.get(entry.getKey());
-            if (data != null)
-            {
-                data.setPatchTimeTo(data.getLastPatchedTime());
-            }
-            else
-            {
-                data = new ChunkData(entry.getKey(), null, entry.getLastPatchedTime());
-                managedChunks.put(entry.getKey(), data);
-            }
-        }
-    }
+		try {
+			nbt.setByteArray("ChunkExtraInfo", DataUtils.toBytebufStorable(toLastPatchedTimeStorable()));
+		} catch (IOException e) {
+			ToughAsNails.logger.error("Couldn't store chunk patch timestamps. Some chunks won't be in synch with season.", e);
+		}
 
-    private void determineLastState()
-    {
-        int lastSnowyState = -1;
-        int lastRainyState = -1;
-        for (int i = journal.size() - 1; i >= 0; i--)
-        {
-            WeatherJournalEvent je = journal.get(i);
-            WeatherEventType etype = je.getEventType();
+		return nbt;
+	}
 
-            switch (etype)
-            {
-                case EVENT_TO_COLD_SEASON:
-                    if (lastSnowyState == -1)
-                        lastSnowyState = 1;
-                    break;
-                case EVENT_TO_WARM_SEASON:
-                    if (lastSnowyState == -1)
-                        lastSnowyState = 0;
-                    break;
-                case EVENT_START_RAINING:
-                    if (lastRainyState == -1)
-                        lastRainyState = 1;
-                    break;
-                case EVENT_STOP_RAINING:
-                    if (lastRainyState == -1)
-                        lastRainyState = 0;
-                    break;
-                case EVENT_UNKNOWN:
-                    ToughAsNails.logger.warn("Unknown weather journal entry found.");
-            }
+	private List<ChunkDataStorage> toLastPatchedTimeStorable() {
+		int size = managedChunks.size();
+		ArrayList<ChunkDataStorage> result = new ArrayList<ChunkDataStorage>(size);
+		for (Map.Entry<ChunkKey, ChunkData> entry : managedChunks.entrySet()) {
+			result.add(new ChunkDataStorage(entry.getKey(), entry.getValue()));
+		}
+		return result;
+	}
 
-            // Is now fully determined?
-            if (lastSnowyState != -1 && lastRainyState != -1)
-                break;
-        }
+	private void applyLastPatchedTimes(List<ChunkDataStorage> list) {
+		for (ChunkDataStorage entry : list) {
+			ChunkData data = managedChunks.get(entry.getKey());
+			if (data != null) {
+				data.setPatchTimeTo(data.getLastPatchedTime());
+			} else {
+				data = new ChunkData(entry.getKey(), null, entry.getLastPatchedTime());
+				managedChunks.put(entry.getKey(), data);
+			}
+		}
+	}
 
-        isLastSnowyState = (lastSnowyState == 1); // -1 state is Default: First
-                                                  // minecraft day is at spring.
-        isLastRainyState = (lastRainyState == 1); // -1 state is Default: First
-                                                  // minecraft day has no rain.
-    }
+	private void determineLastState() {
+		int lastSnowyState = -1;
+		int lastRainyState = -1;
+		for (int i = journal.size() - 1; i >= 0; i--) {
+			WeatherJournalEvent je = journal.get(i);
+			WeatherEventType etype = je.getEventType();
 
-    public boolean wasLastRaining(int atIdx)
-    {
-        if (atIdx != -1)
-        {
-            for (int i = atIdx; i < journal.size(); i++)
-            {
-                WeatherJournalEvent je = journal.get(i);
-                WeatherEventType etype = je.getEventType();
+			switch (etype) {
+				case EVENT_TO_COLD_SEASON:
+					if (lastSnowyState == -1) lastSnowyState = 1;
+					break;
+				case EVENT_TO_WARM_SEASON:
+					if (lastSnowyState == -1) lastSnowyState = 0;
+					break;
+				case EVENT_START_RAINING:
+					if (lastRainyState == -1) lastRainyState = 1;
+					break;
+				case EVENT_STOP_RAINING:
+					if (lastRainyState == -1) lastRainyState = 0;
+					break;
+				case EVENT_UNKNOWN:
+					ToughAsNails.logger.warn("Unknown weather journal entry found.");
+			}
 
-                switch (etype)
-                {
-                    case EVENT_START_RAINING:
-                        return false;
-                    case EVENT_STOP_RAINING:
-                        return true;
-                    default:
-                }
-            }
-        }
+			// Is now fully determined?
+			if (lastSnowyState != -1 && lastRainyState != -1) break;
+		}
 
-        return isLastRainyState;
-    }
+		isLastSnowyState = (lastSnowyState == 1); // -1 state is Default: First
+													// minecraft day is at spring.
+		isLastRainyState = (lastRainyState == 1); // -1 state is Default: First
+													// minecraft day has no rain.
+	}
 
-    public boolean wasLastSnowy(int atIdx)
-    {
-        if (atIdx != -1)
-        {
-            for (int i = atIdx; i < journal.size(); i++)
-            {
-                WeatherJournalEvent je = journal.get(i);
-                WeatherEventType etype = je.getEventType();
+	public boolean wasLastRaining(int atIdx) {
+		if (atIdx != -1) {
+			for (int i = atIdx; i < journal.size(); i++) {
+				WeatherJournalEvent je = journal.get(i);
+				WeatherEventType etype = je.getEventType();
 
-                switch (etype)
-                {
-                    case EVENT_TO_COLD_SEASON:
-                        return false;
-                    case EVENT_TO_WARM_SEASON:
-                        return true;
-                    default:
-                }
-            }
-        }
+				switch (etype) {
+					case EVENT_START_RAINING:
+						return false;
+					case EVENT_STOP_RAINING:
+						return true;
+					default:
+				}
+			}
+		}
 
-        return isLastSnowyState;
-    }
+		return isLastRainyState;
+	}
 
-    public int getJournalIndexAfterTime(long timeStamp)
-    {
-        // TODO: Use subdivision to find the time point in approx. O(log n)
-        // steps.
+	public boolean wasLastSnowy(int atIdx) {
+		if (atIdx != -1) {
+			for (int i = atIdx; i < journal.size(); i++) {
+				WeatherJournalEvent je = journal.get(i);
+				WeatherEventType etype = je.getEventType();
 
-        for (int i = 0; i < journal.size(); i++)
-        {
-            if (journal.get(i).getTimeStamp() >= timeStamp)
-                return i;
-        }
+				switch (etype) {
+					case EVENT_TO_COLD_SEASON:
+						return false;
+					case EVENT_TO_WARM_SEASON:
+						return true;
+					default:
+				}
+			}
+		}
 
-        return -1;
-    }
+		return isLastSnowyState;
+	}
 
-    private void addEvent(World w, WeatherEventType eventType)
-    {
-        switch (eventType)
-        {
-            case EVENT_TO_COLD_SEASON:
-                isLastSnowyState = true;
-                break;
-            case EVENT_TO_WARM_SEASON:
-                isLastSnowyState = false;
-                break;
-            case EVENT_START_RAINING:
-                isLastRainyState = true;
-                break;
-            case EVENT_STOP_RAINING:
-                isLastRainyState = false;
-                break;
-            case EVENT_UNKNOWN:
-                ToughAsNails.logger.warn("Unknown weather event added. Ignoring");
-                return;
-        }
+	public int getJournalIndexAfterTime(long timeStamp) {
+		// TODO: Use subdivision to find the time point in approx. O(log n)
+		// steps.
 
-        journal.add(new WeatherJournalEvent(w.getTotalWorldTime(), eventType));
-    }
+		for (int i = 0; i < journal.size(); i++) {
+			if (journal.get(i).getTimeStamp() >= timeStamp) return i;
+		}
 
-    public void updateJournal(World w, Season curSeason)
-    {
-        if (curSeason == Season.WINTER && !wasLastSnowy(-1))
-            addEvent(w, WeatherEventType.EVENT_TO_COLD_SEASON);
-        else if (curSeason != Season.WINTER && wasLastSnowy(-1))
-            addEvent(w, WeatherEventType.EVENT_TO_WARM_SEASON);
+		return -1;
+	}
 
-        if (w.isRaining() && !wasLastRaining(-1))
-            addEvent(w, WeatherEventType.EVENT_START_RAINING);
-        else if (!w.isRaining() && wasLastRaining(-1))
-            addEvent(w, WeatherEventType.EVENT_STOP_RAINING);
-    }
+	private void addEvent(World w, WeatherEventType eventType) {
+		switch (eventType) {
+			case EVENT_TO_COLD_SEASON:
+				isLastSnowyState = true;
+				break;
+			case EVENT_TO_WARM_SEASON:
+				isLastSnowyState = false;
+				break;
+			case EVENT_START_RAINING:
+				isLastRainyState = true;
+				break;
+			case EVENT_STOP_RAINING:
+				isLastRainyState = false;
+				break;
+			case EVENT_UNKNOWN:
+				ToughAsNails.logger.warn("Unknown weather event added. Ignoring");
+				return;
+		}
 
-    public ChunkData getStoredChunkData(Chunk chunk, boolean bCreateIfNotExisting)
-    {
-        ChunkPos cpos = chunk.getPos();
-        ChunkKey key = new ChunkKey(cpos, chunk.getWorld());
-        ChunkData chunkData = managedChunks.get(key);
-        if (chunkData != null)
-        {
-            Chunk curChunk = chunkData.getChunk();
-            if (curChunk != null)
-            {
-                if (curChunk != chunk)
-                {
-                    if (!curChunk.unloaded)
-                        ToughAsNails.logger.error("Chunk mismatching in SeasonSavedData.getStoredChunkData .");
-                    curChunk = null;
-                }
-            }
+		journal.add(new WeatherJournalEvent(w.getTotalWorldTime(), eventType));
+	}
 
-            if (curChunk == null)
-            {
-                if (bCreateIfNotExisting)
-                {
-                    chunkData.setLoadedChunk(chunk);
-                }
-                else
-                    return null;
-            }
-            return chunkData;
-        }
-        if (!bCreateIfNotExisting)
-            return null;
+	public void updateJournal(World w, Season curSeason) {
+		if (curSeason == Season.WINTER && !wasLastSnowy(-1)) addEvent(w, WeatherEventType.EVENT_TO_COLD_SEASON);
+		else if (curSeason != Season.WINTER && wasLastSnowy(-1)) addEvent(w, WeatherEventType.EVENT_TO_WARM_SEASON);
 
-        long lastPatchTime = 0; // Initial time. Should be bigger than
-                                // ActiveChunkData.getSmallerKey() value!
+		if (w.isRaining() && !wasLastRaining(-1)) addEvent(w, WeatherEventType.EVENT_START_RAINING);
+		else if (!w.isRaining() && wasLastRaining(-1)) addEvent(w, WeatherEventType.EVENT_STOP_RAINING);
+	}
 
-        chunkData = new ChunkData(key, chunk, lastPatchTime);
-        managedChunks.put(key, chunkData);
-        return chunkData;
-    }
+	public ChunkData getStoredChunkData(Chunk chunk, boolean bCreateIfNotExisting) {
+		ChunkPos cpos = chunk.getPos();
+		ChunkKey key = new ChunkKey(cpos, chunk.getWorld());
+		ChunkData chunkData = managedChunks.get(key);
+		if (chunkData != null) {
+			Chunk curChunk = chunkData.getChunk();
+			if (curChunk != null) {
+				if (curChunk != chunk) {
+					if (!curChunk.unloaded) ToughAsNails.logger.error("Chunk mismatching in SeasonSavedData.getStoredChunkData .");
+					curChunk = null;
+				}
+			}
 
-    public ChunkData getStoredChunkData(ChunkKey key, boolean bCreateIfNotExisting)
-    {
-        ChunkData chunkData = managedChunks.get(key);
-        if (chunkData == null && bCreateIfNotExisting)
-        {
-            long lastPatchTime = 0; // Initial time. Should be bigger than
-                                    // ActiveChunkData.getSmallerKey() value!
+			if (curChunk == null) {
+				if (bCreateIfNotExisting) {
+					chunkData.setLoadedChunk(chunk);
+				} else return null;
+			}
+			return chunkData;
+		}
+		if (!bCreateIfNotExisting) return null;
 
-            chunkData = new ChunkData(key, null, lastPatchTime);
-            managedChunks.put(key, chunkData);
-        }
-        return chunkData;
-    }
+		long lastPatchTime = 0; // Initial time. Should be bigger than
+								// ActiveChunkData.getSmallerKey() value!
 
-    public ChunkData getStoredChunkData(World world, ChunkPos pos, boolean bCreateIfNotExisting)
-    {
-        ChunkKey key = new ChunkKey(pos, world);
-        return getStoredChunkData(key, bCreateIfNotExisting);
-    }
+		chunkData = new ChunkData(key, chunk, lastPatchTime);
+		managedChunks.put(key, chunkData);
+		return chunkData;
+	}
 
-    public void onWorldUnload(World world)
-    {
-        // Clear managed chunk tags associated to the world
-        managedChunks.clear(); // No BUG: managedChunks contains only chunks
-                               // associated to the world.
-    }
+	public ChunkData getStoredChunkData(ChunkKey key, boolean bCreateIfNotExisting) {
+		ChunkData chunkData = managedChunks.get(key);
+		if (chunkData == null && bCreateIfNotExisting) {
+			long lastPatchTime = 0; // Initial time. Should be bigger than
+									// ActiveChunkData.getSmallerKey() value!
 
-    public void notifyChunkUnloaded(Chunk chunk)
-    {
-        ChunkKey key = new ChunkKey(chunk.getPos(), chunk.getWorld());
-        ChunkData chunkData = managedChunks.get(key);
-        if (chunkData != null)
-        {
-            chunkData.clearLoadedChunk();
-        }
-    }
+			chunkData = new ChunkData(key, null, lastPatchTime);
+			managedChunks.put(key, chunkData);
+		}
+		return chunkData;
+	}
 
-    public static class ChunkDataStorage implements IDataStorable
-    {
-        private ChunkKey key;
-        private long lastPatchedTime;
+	public ChunkData getStoredChunkData(World world, ChunkPos pos, boolean bCreateIfNotExisting) {
+		ChunkKey key = new ChunkKey(pos, world);
+		return getStoredChunkData(key, bCreateIfNotExisting);
+	}
 
-        public ChunkDataStorage()
-        {
-            // For streaming
-        }
+	public void onWorldUnload(World world) {
+		// Clear managed chunk tags associated to the world
+		managedChunks.clear(); // No BUG: managedChunks contains only chunks
+								// associated to the world.
+	}
 
-        public ChunkDataStorage(ChunkKey key, ChunkData data)
-        {
-            this.key = key;
-            this.lastPatchedTime = data.getLastPatchedTime();
-        }
+	public void notifyChunkUnloaded(Chunk chunk) {
+		ChunkKey key = new ChunkKey(chunk.getPos(), chunk.getWorld());
+		ChunkData chunkData = managedChunks.get(key);
+		if (chunkData != null) {
+			chunkData.clearLoadedChunk();
+		}
+	}
 
-        public ChunkKey getKey()
-        {
-            return key;
-        }
+	public static class ChunkDataStorage implements IDataStorable {
 
-        public long getLastPatchedTime()
-        {
-            return lastPatchedTime;
-        }
+		private ChunkKey key;
 
-        @Override
-        public void writeToStream(ObjectOutputStream os) throws IOException
-        {
-            os.writeInt(key.getPos().chunkXPos);
-            os.writeInt(key.getPos().chunkZPos);
-            os.writeInt(key.getDimension());
-            os.writeLong(lastPatchedTime);
-        }
+		private long lastPatchedTime;
 
-        @Override
-        public void readFromStream(ObjectInputStream is) throws IOException
-        {
-            int chunkXPos = is.readInt();
-            int chunkZPos = is.readInt();
-            int dimension = is.readInt();
-            this.key = new ChunkKey(new ChunkPos(chunkXPos, chunkZPos), dimension);
-            this.lastPatchedTime = is.readLong();
-        }
-    }
+		public ChunkDataStorage() {
+			// For streaming
+		}
+
+		public ChunkDataStorage(ChunkKey key, ChunkData data) {
+			this.key = key;
+			this.lastPatchedTime = data.getLastPatchedTime();
+		}
+
+		public ChunkKey getKey() {
+			return key;
+		}
+
+		public long getLastPatchedTime() {
+			return lastPatchedTime;
+		}
+
+		@Override
+		public void writeToStream(ObjectOutputStream os) throws IOException {
+			os.writeInt(key.getPos().chunkXPos);
+			os.writeInt(key.getPos().chunkZPos);
+			os.writeInt(key.getDimension());
+			os.writeLong(lastPatchedTime);
+		}
+
+		@Override
+		public void readFromStream(ObjectInputStream is) throws IOException {
+			int chunkXPos = is.readInt();
+			int chunkZPos = is.readInt();
+			int dimension = is.readInt();
+			this.key = new ChunkKey(new ChunkPos(chunkXPos, chunkZPos), dimension);
+			this.lastPatchedTime = is.readLong();
+		}
+	}
 }

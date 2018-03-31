@@ -13,48 +13,45 @@ import toughasnails.api.stat.IPlayerStat;
 import toughasnails.api.stat.PlayerStatRegistry;
 import toughasnails.api.stat.StatHandlerBase;
 
-public class MessageUpdateStat implements IMessage, IMessageHandler<MessageUpdateStat, IMessage>
-{
-    public String identifier;
-    public NBTTagCompound data;
-    
-    public MessageUpdateStat() {}
-    
-    public MessageUpdateStat(Capability<?> capability, NBTTagCompound data)
-    {
-        if (data == null) throw new IllegalArgumentException("Data cannot be null!");
-        
-        this.identifier = capability.getName();
-        this.data = data;
-    }
+public class MessageUpdateStat implements IMessage, IMessageHandler<MessageUpdateStat, IMessage> {
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.identifier = ByteBufUtils.readUTF8String(buf);
-        this.data = ByteBufUtils.readTag(buf);
-    }
+	public String identifier;
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        ByteBufUtils.writeUTF8String(buf, this.identifier);
-        ByteBufUtils.writeTag(buf, this.data);
-    }
-    
-    @Override
-    public IMessage onMessage(MessageUpdateStat message, MessageContext ctx)
-    {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        
-        if (player != null)
-        {
-            Capability<IPlayerStat> capability = (Capability<IPlayerStat>)PlayerStatRegistry.getCapability(message.identifier);
-            StatHandlerBase stat = (StatHandlerBase)player.getCapability(capability, null);
-            
-            capability.getStorage().readNBT(capability, stat, null, message.data);
-        }
-        
-        return null;
-    }
+	public NBTTagCompound data;
+
+	public MessageUpdateStat() {
+	}
+
+	public MessageUpdateStat(Capability<?> capability, NBTTagCompound data) {
+		if (data == null) throw new IllegalArgumentException("Data cannot be null!");
+
+		this.identifier = capability.getName();
+		this.data = data;
+	}
+
+	@Override
+	public void fromBytes(ByteBuf buf) {
+		this.identifier = ByteBufUtils.readUTF8String(buf);
+		this.data = ByteBufUtils.readTag(buf);
+	}
+
+	@Override
+	public void toBytes(ByteBuf buf) {
+		ByteBufUtils.writeUTF8String(buf, this.identifier);
+		ByteBufUtils.writeTag(buf, this.data);
+	}
+
+	@Override
+	public IMessage onMessage(MessageUpdateStat message, MessageContext ctx) {
+		EntityPlayerSP player = Minecraft.getMinecraft().player;
+
+		if (player != null) {
+			Capability<IPlayerStat> capability = (Capability<IPlayerStat>) PlayerStatRegistry.getCapability(message.identifier);
+			StatHandlerBase stat = (StatHandlerBase) player.getCapability(capability, null);
+
+			capability.getStorage().readNBT(capability, stat, null, message.data);
+		}
+
+		return null;
+	}
 }

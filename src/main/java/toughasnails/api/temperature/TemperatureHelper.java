@@ -19,35 +19,29 @@ import toughasnails.api.TANCapabilities;
 import toughasnails.api.stat.capability.ITemperature;
 import toughasnails.api.stat.capability.IThirst;
 
-public class TemperatureHelper 
-{
-    public static ITemperature getTemperatureData(EntityPlayer player)
-    {
-        return player.getCapability(TANCapabilities.TEMPERATURE, null);
-    }
-    
-    public static List<ITemperatureRegulator> getTemperatureRegulators(World world)
-    {
-        List<ITemperatureRegulator> list = Lists.newArrayList();
-        
-        for (TileEntity tileEntity : world.tickableTileEntities)
-        {
-            if (tileEntity instanceof ITemperatureRegulator) list.add((ITemperatureRegulator)tileEntity);
-        }
-        
-        return list;
-    }
-    
-    public static boolean isPosClimatisedForTemp(World world, BlockPos pos, Temperature temperature)
-    {
-        for (ITemperatureRegulator regulator : getTemperatureRegulators(world))
-        {
-            if (regulator.getRegulatedTemperature().getRawValue() >= temperature.getRawValue() && regulator.isPosRegulated(pos))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
+public class TemperatureHelper {
+
+	public static ITemperature getTemperatureData(EntityPlayer player) {
+		return player.getCapability(TANCapabilities.TEMPERATURE, null);
+	}
+
+	public static List<ITemperatureRegulator> getTemperatureRegulators(World world) {
+		List<ITemperatureRegulator> list = Lists.newArrayList();
+
+		for (TileEntity tileEntity : world.tickableTileEntities) {
+			if (tileEntity instanceof ITemperatureRegulator) list.add((ITemperatureRegulator) tileEntity);
+		}
+
+		return list;
+	}
+
+	public static boolean isPosClimatisedForTemp(World world, BlockPos pos, Temperature temperature) {
+		for (ITemperatureRegulator regulator : getTemperatureRegulators(world)) {
+			if (regulator.getRegulatedTemperature().getRawValue() >= temperature.getRawValue() && regulator.isPosRegulated(pos)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

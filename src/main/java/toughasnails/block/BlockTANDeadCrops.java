@@ -17,32 +17,28 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-public class BlockTANDeadCrops extends BlockBush
-{
-    private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D);
-    
-    public BlockTANDeadCrops()
-    {
-        this.setHardness(0.0F);
-        this.setSoundType(SoundType.PLANT);
-        this.disableStats();
-    }
-    
-    @Override
-    protected boolean canSustainBush(IBlockState state)
-    {
-        return state.getBlock() == Blocks.FARMLAND;
-    }
-    
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        return BOUNDING_BOX;
-    }
-    
-    @Override
-    public int quantityDropped(Random random)
-    {
-        return 0;
-    }
+public class BlockTANDeadCrops extends BlockBush {
+
+	private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D);
+
+	public BlockTANDeadCrops() {
+		this.setHardness(0.0F);
+		this.setSoundType(SoundType.PLANT);
+		this.disableStats();
+	}
+
+	@Override
+	protected boolean canSustainBush(IBlockState state) {
+		return state.getBlock() == Blocks.FARMLAND;
+	}
+
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return BOUNDING_BOX;
+	}
+
+	@Override
+	public int quantityDropped(Random random) {
+		return 0;
+	}
 }

@@ -6,42 +6,37 @@ import java.io.ObjectOutputStream;
 
 import toughasnails.util.IDataStorable;
 
-public class WeatherJournalEvent implements IDataStorable
-{
-    private long timeStamp;
-    private WeatherEventType eventType;
+public class WeatherJournalEvent implements IDataStorable {
 
-    public WeatherJournalEvent()
-    {
-    }
+	private long timeStamp;
 
-    public WeatherJournalEvent(long timeStamp, WeatherEventType eventType)
-    {
-        this.timeStamp = timeStamp;
-        this.eventType = eventType;
-    }
+	private WeatherEventType eventType;
 
-    public long getTimeStamp()
-    {
-        return timeStamp;
-    }
+	public WeatherJournalEvent() {
+	}
 
-    public WeatherEventType getEventType()
-    {
-        return eventType;
-    }
+	public WeatherJournalEvent(long timeStamp, WeatherEventType eventType) {
+		this.timeStamp = timeStamp;
+		this.eventType = eventType;
+	}
 
-    @Override
-    public void writeToStream(ObjectOutputStream os) throws IOException
-    {
-        os.writeLong(timeStamp);
-        os.writeInt(eventType.getCode());
-    }
+	public long getTimeStamp() {
+		return timeStamp;
+	}
 
-    @Override
-    public void readFromStream(ObjectInputStream is) throws IOException
-    {
-        timeStamp = is.readLong();
-        eventType = WeatherEventType.fromCode(is.readInt());
-    }
+	public WeatherEventType getEventType() {
+		return eventType;
+	}
+
+	@Override
+	public void writeToStream(ObjectOutputStream os) throws IOException {
+		os.writeLong(timeStamp);
+		os.writeInt(eventType.getCode());
+	}
+
+	@Override
+	public void readFromStream(ObjectInputStream is) throws IOException {
+		timeStamp = is.readLong();
+		eventType = WeatherEventType.fromCode(is.readInt());
+	}
 }

@@ -26,73 +26,63 @@ import toughasnails.api.thirst.ThirstHelper;
 import toughasnails.api.config.GameplayOption;
 import toughasnails.thirst.ThirstHandler;
 
-public abstract class ItemDrink<T extends Enum<T> & IDrink> extends Item
-{
-    public ItemDrink()
-    {
-        this.setMaxStackSize(1);
-        this.setHasSubtypes(true);
-        this.setMaxDamage(0);
-    }
-    
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
-    {
-        ItemStack stack = player.getHeldItem(hand);
-        ThirstHandler thirstHandler = (ThirstHandler)ThirstHelper.getThirstData(player);
-        
-        if (thirstHandler.isThirsty())
-        {
-            player.setActiveHand(hand);
-        }
-        
-        return new ActionResult(EnumActionResult.SUCCESS, stack);
-    }
-    
-    @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity)
-    {
-        if (!world.isRemote && entity instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer)entity;
-            IThirst thirst = ThirstHelper.getThirstData(player);
-            T type = getTypeFromMeta(stack.getMetadata());
-            
-            thirst.addStats(type.getThirst(), type.getHydration());
-            addEffects(player, type);
-            
-            return new ItemStack(Items.GLASS_BOTTLE);
-        }
+public abstract class ItemDrink<T extends Enum<T> & IDrink> extends Item {
 
-        return stack;
-    }
-    
-    public void addEffects(EntityPlayer player, T type)
-    {
-        if (player.world.rand.nextFloat() < type.getPoisonChance() && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_THIRST))
-        {
-            player.addPotionEffect(new PotionEffect(TANPotions.thirst, 600));
-        }
-    }
-    
-    public abstract T getTypeFromMeta(int meta);
-    
-    @Override
-    public int getMaxItemUseDuration(ItemStack stack)
-    {
-        return 32;
-    }
+	public ItemDrink() {
+		this.setMaxStackSize(1);
+		this.setHasSubtypes(true);
+		this.setMaxDamage(0);
+	}
 
-    @Override
-    public EnumAction getItemUseAction(ItemStack stack)
-    {
-        return EnumAction.DRINK;
-    }
-    
-    // default behavior in Item is to return 0, but the meta value is important here because it determines which dart type to use
-    @Override
-    public int getMetadata(int metadata)
-    {
-        return metadata;
-    }
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		ThirstHandler thirstHandler = (ThirstHandler) ThirstHelper.getThirstData(player);
+
+		if (thirstHandler.isThirsty()) {
+			player.setActiveHand(hand);
+		}
+
+		return new ActionResult(EnumActionResult.SUCCESS, stack);
+	}
+
+	@Override
+	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity) {
+		if (!world.isRemote && entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) entity;
+			IThirst thirst = ThirstHelper.getThirstData(player);
+			T type = getTypeFromMeta(stack.getMetadata());
+
+			thirst.addStats(type.getThirst(), type.getHydration());
+			addEffects(player, type);
+
+			return new ItemStack(Items.GLASS_BOTTLE);
+		}
+
+		return stack;
+	}
+
+	public void addEffects(EntityPlayer player, T type) {
+		if (player.world.rand.nextFloat() < type.getPoisonChance() && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_THIRST)) {
+			player.addPotionEffect(new PotionEffect(TANPotions.thirst, 600));
+		}
+	}
+
+	public abstract T getTypeFromMeta(int meta);
+
+	@Override
+	public int getMaxItemUseDuration(ItemStack stack) {
+		return 32;
+	}
+
+	@Override
+	public EnumAction getItemUseAction(ItemStack stack) {
+		return EnumAction.DRINK;
+	}
+
+	// default behavior in Item is to return 0, but the meta value is important here because it determines which dart type to use
+	@Override
+	public int getMetadata(int metadata) {
+		return metadata;
+	}
 }

@@ -21,71 +21,59 @@ import toughasnails.api.thirst.IDrink;
 import toughasnails.api.thirst.WaterType;
 import toughasnails.item.ItemTANWaterBottle.WaterBottleType;
 
-public class ItemTANWaterBottle extends ItemDrink<WaterBottleType>
-{
-    @Override
-    public WaterBottleType getTypeFromMeta(int meta) 
-    {
-        return WaterBottleType.values()[meta % WaterBottleType.values().length];
-    }
-    
-    // get the correct name for this item by looking up the meta value in the DartType enum
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        return "item." + getTypeFromMeta(stack.getMetadata()).toString() + "_water_bottle";
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
-    {
-        for (WaterBottleType waterBottleType : WaterBottleType.values())
-        {
-            subItems.add(new ItemStack(item, 1, waterBottleType.ordinal()));
-        }
-    }
-    
-    public static enum WaterBottleType implements IDrink, IStringSerializable
-    {
-        DIRTY(WaterType.DIRTY), 
-        FILTERED(WaterType.FILTERED);
-        
-        private WaterType type;
-        
-        private WaterBottleType(WaterType type)
-        {
-            this.type = type;
-        }
-        
-        @Override
-        public int getThirst()
-        {
-            return type.getThirst();
-        }
-        
-        @Override
-        public float getHydration()
-        {
-            return type.getHydration();
-        }
-        
-        @Override
-        public float getPoisonChance()
-        {
-            return type.getPoisonChance();
-        }
-        
-        @Override
-        public String getName()
-        {
-            return this.name().toLowerCase();
-        }
-        
-        @Override
-        public String toString()
-        {
-            return this.getName();
-        }
-    }
+public class ItemTANWaterBottle extends ItemDrink<WaterBottleType> {
+
+	@Override
+	public WaterBottleType getTypeFromMeta(int meta) {
+		return WaterBottleType.values()[meta % WaterBottleType.values().length];
+	}
+
+	// get the correct name for this item by looking up the meta value in the DartType enum
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		return "item." + getTypeFromMeta(stack.getMetadata()).toString() + "_water_bottle";
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+		for (WaterBottleType waterBottleType : WaterBottleType.values()) {
+			subItems.add(new ItemStack(item, 1, waterBottleType.ordinal()));
+		}
+	}
+
+	public static enum WaterBottleType implements IDrink, IStringSerializable {
+		DIRTY(WaterType.DIRTY), FILTERED(WaterType.FILTERED);
+
+		private WaterType type;
+
+		private WaterBottleType(WaterType type) {
+			this.type = type;
+		}
+
+		@Override
+		public int getThirst() {
+			return type.getThirst();
+		}
+
+		@Override
+		public float getHydration() {
+			return type.getHydration();
+		}
+
+		@Override
+		public float getPoisonChance() {
+			return type.getPoisonChance();
+		}
+
+		@Override
+		public String getName() {
+			return this.name().toLowerCase();
+		}
+
+		@Override
+		public String toString() {
+			return this.getName();
+		}
+	}
 }

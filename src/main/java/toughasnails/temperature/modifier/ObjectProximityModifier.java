@@ -18,93 +18,80 @@ import toughasnails.temperature.TemperatureDebugger.Modifier;
 import toughasnails.util.BlockStateUtils;
 
 //TODO: Replace this with something better
-public class ObjectProximityModifier extends TemperatureModifier
-{
-    public ObjectProximityModifier(TemperatureDebugger debugger)
-    {
-        super(debugger);
-    }
+public class ObjectProximityModifier extends TemperatureModifier {
 
-    @Override
-    public Temperature modifyTarget(World world, EntityPlayer player, Temperature temperature)
-    {
-        int temperatureLevel = temperature.getRawValue();
-        int newTemperatureLevel = temperatureLevel;
-        BlockPos playerPos = player.getPosition();
+	public ObjectProximityModifier(TemperatureDebugger debugger) {
+		super(debugger);
+	}
 
-        float blockTemperatureModifier = 0.0F;
+	@Override
+	public Temperature modifyTarget(World world, EntityPlayer player, Temperature temperature) {
+		int temperatureLevel = temperature.getRawValue();
+		int newTemperatureLevel = temperatureLevel;
+		BlockPos playerPos = player.getPosition();
 
-        for (int x = -3; x <= 3; x++)
-        {
-            for (int y = -2; y <= 2; y++)
-            {
-                for (int z = -3; z <= 3; z++)
-                {
-                    BlockPos pos = playerPos.add(x, y - 1, z);
-                    IBlockState state = world.getBlockState(pos);
-                    float mod = getBlockTemperature(player, state);
+		float blockTemperatureModifier = 0.0F;
 
-                    // use the most drastic temperature affecting block's temperature
-                    if (Math.abs(mod) > Math.abs(blockTemperatureModifier))
-                    {
-                        blockTemperatureModifier = mod;
-                    }
-                }
-            }
-        }
+		for (int x = -3; x <= 3; x++) {
+			for (int y = -2; y <= 2; y++) {
+				for (int z = -3; z <= 3; z++) {
+					BlockPos pos = playerPos.add(x, y - 1, z);
+					IBlockState state = world.getBlockState(pos);
+					float mod = getBlockTemperature(player, state);
 
-        debugger.start(Modifier.NEARBY_BLOCKS_TARGET, newTemperatureLevel);
-        newTemperatureLevel += blockTemperatureModifier;
-        debugger.end(newTemperatureLevel);
+					// use the most drastic temperature affecting block's temperature
+					if (Math.abs(mod) > Math.abs(blockTemperatureModifier)) {
+						blockTemperatureModifier = mod;
+					}
+				}
+			}
+		}
 
-        return new Temperature(newTemperatureLevel);
-    }
+		debugger.start(Modifier.NEARBY_BLOCKS_TARGET, newTemperatureLevel);
+		newTemperatureLevel += blockTemperatureModifier;
+		debugger.end(newTemperatureLevel);
 
-    public static float getBlockTemperature(EntityPlayer player, IBlockState state)
-    {
-        World world = player.world;
-        Material material = state.getMaterial();
-        Biome biome = world.getBiome(player.getPosition());
+		return new Temperature(newTemperatureLevel);
+	}
 
-        ResourceLocation registryName = state.getBlock().getRegistryName();
-        if (registryName == null) return 0.0F;
-        String blockName = state.getBlock().getRegistryName().toString();
+	public static float getBlockTemperature(EntityPlayer player, IBlockState state) {
+		World world = player.world;
+		Material material = state.getMaterial();
+		Biome biome = world.getBiome(player.getPosition());
 
-        //Blocks
-        if (TANConfig.blockTemperatureData.containsKey(blockName))
-        {
-            ArrayList<BlockTemperatureData> blockTempData = TANConfig.blockTemperatureData.get(blockName);
+		ResourceLocation registryName = state.getBlock().getRegistryName();
+		if (registryName == null) return 0.0F;
+		String blockName = state.getBlock().getRegistryName().toString();
 
-            //Check if block has relevant state: 
-            for (BlockTemperatureData tempData : blockTempData)
-            {
-                boolean bAllSpecifiedPropertiesMatch = true;
-                for (String comparisonProperty : tempData.useProperties)
-                {
-                    IProperty<?> targetProperty = BlockStateUtils.getPropertyByName(state, comparisonProperty);
+		// Blocks
+		if (TANConfig.blockTemperatureData.containsKey(blockName)) {
+			ArrayList<BlockTemperatureData> blockTempData = TANConfig.blockTemperatureData.get(blockName);
 
-                    if (!(state.getValue(targetProperty) == tempData.state.getValue(targetProperty)))
-                    {
-                        bAllSpecifiedPropertiesMatch = false;
-                    }
-                }
+			// Check if block has relevant state:
+			for (BlockTemperatureData tempData : blockTempData) {
+				boolean bAllSpecifiedPropertiesMatch = true;
+				for (String comparisonProperty : tempData.useProperties) {
+					IProperty<?> targetProperty = BlockStateUtils.getPropertyByName(state, comparisonProperty);
 
-                if (bAllSpecifiedPropertiesMatch)
-                {
-                    return tempData.blockTemperature;
-                }
-            }
+					if (!(state.getValue(targetProperty) == tempData.state.getValue(targetProperty))) {
+						bAllSpecifiedPropertiesMatch = false;
+					}
+				}
 
-            // If no matching states, then block is at ambient temperature:
-            return 0.0F;
-        }
+				if (bAllSpecifiedPropertiesMatch) {
+					return tempData.blockTemperature;
+				}
+			}
 
-        //Handle materials, but only if we didn't already find an actual block to use: 
-        if (material == Material.FIRE)
-        {
-            return TANConfig.materialTemperatureData.fire;
-        }
+			// If no matching states, then block is at ambient temperature:
+			return 0.0F;
+		}
 
-        return 0.0F;
-    }
+		// Handle materials, but only if we didn't already find an actual block to use:
+		if (material == Material.FIRE) {
+			return TANConfig.materialTemperatureData.fire;
+		}
+
+		return 0.0F;
+	}
 }

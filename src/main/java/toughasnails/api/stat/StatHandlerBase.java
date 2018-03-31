@@ -7,8 +7,9 @@
  ******************************************************************************/
 package toughasnails.api.stat;
 
-public abstract class StatHandlerBase implements IPlayerStat
-{
-    @Override
-    public void onSendClientUpdate() {}
+public abstract class StatHandlerBase implements IPlayerStat {
+
+	@Override
+	public void onSendClientUpdate() {
+	}
 }

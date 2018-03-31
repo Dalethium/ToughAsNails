@@ -28,55 +28,57 @@ import toughasnails.init.ModPotions;
 import toughasnails.init.ModStats;
 import toughasnails.init.ModVanillaCompat;
 
-@Mod(modid = ToughAsNails.MOD_ID, version = ToughAsNails.MOD_VERSION, name = ToughAsNails.MOD_NAME, dependencies = "required-after:forge@[1.0.0.0,)", guiFactory = ToughAsNails.GUI_FACTORY)
-public class ToughAsNails
-{
-    public static final String MOD_NAME = "Tough As Nails";
-    public static final String MOD_ID = "toughasnails";
-    public static final String MOD_VERSION = "@MOD_VERSION@";
-    public static final String GUI_FACTORY = "toughasnails.client.gui.GuiFactory";
-    
-    @Instance(MOD_ID)
-    public static ToughAsNails instance;
-    
-    @SidedProxy(clientSide = "toughasnails.core.ClientProxy", serverSide = "toughasnails.core.CommonProxy")
-    public static CommonProxy proxy;
-    
-    public static Logger logger = LogManager.getLogger(MOD_ID);
-    public static File configDirectory;
-    
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
-        configDirectory = new File(event.getModConfigurationDirectory(), "toughasnails");
+@Mod(modid = ToughAsNails.MOD_ID, version = ToughAsNails.MOD_VERSION, name = ToughAsNails.MOD_NAME,
+		dependencies = "required-after:forge@[1.0.0.0,)", guiFactory = ToughAsNails.GUI_FACTORY)
+public class ToughAsNails {
 
-        ModConfig.init(configDirectory);
-    	ModBlocks.init();
-    	ModEntities.init();
-        ModItems.init();
-        ModStats.init();
-        ModPotions.init();
-        ModVanillaCompat.init();
-        ModHandlers.init();
-        
-        ModCrafting.init();
-        ModAchievements.init();
-        
-        MinecraftForge.EVENT_BUS.register(new LootTableEventHandler());
-        MinecraftForge.EVENT_BUS.register(new BlockHarvestEventHandler());
-        
-        proxy.registerRenderers();
-    }
-    
-    @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        TANConfig.init(configDirectory);
-    }
-    
-    @EventHandler
-    public void serverStarting(FMLServerStartingEvent event)
-    {
-        event.registerServerCommand(new TANCommand());
-    }
+	public static final String MOD_NAME = "Tough As Nails";
+
+	public static final String MOD_ID = "toughasnails";
+
+	public static final String MOD_VERSION = "@MOD_VERSION@";
+
+	public static final String GUI_FACTORY = "toughasnails.client.gui.GuiFactory";
+
+	@Instance(MOD_ID)
+	public static ToughAsNails instance;
+
+	@SidedProxy(clientSide = "toughasnails.core.ClientProxy", serverSide = "toughasnails.core.CommonProxy")
+	public static CommonProxy proxy;
+
+	public static Logger logger = LogManager.getLogger(MOD_ID);
+
+	public static File configDirectory;
+
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event) {
+		configDirectory = new File(event.getModConfigurationDirectory(), "toughasnails");
+
+		ModConfig.init(configDirectory);
+		ModBlocks.init();
+		ModEntities.init();
+		ModItems.init();
+		ModStats.init();
+		ModPotions.init();
+		ModVanillaCompat.init();
+		ModHandlers.init();
+
+		ModCrafting.init();
+		ModAchievements.init();
+
+		MinecraftForge.EVENT_BUS.register(new LootTableEventHandler());
+		MinecraftForge.EVENT_BUS.register(new BlockHarvestEventHandler());
+
+		proxy.registerRenderers();
+	}
+
+	@EventHandler
+	public void init(FMLInitializationEvent event) {
+		TANConfig.init(configDirectory);
+	}
+
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent event) {
+		event.registerServerCommand(new TANCommand());
+	}
 }

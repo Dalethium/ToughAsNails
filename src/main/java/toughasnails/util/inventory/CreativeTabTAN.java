@@ -5,18 +5,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import toughasnails.api.item.TANItems;
 
-public class CreativeTabTAN extends CreativeTabs
-{
-    public static final CreativeTabs instance = new CreativeTabTAN(CreativeTabs.getNextID(), "tabToughAsNails");
+public class CreativeTabTAN extends CreativeTabs {
 
-    private CreativeTabTAN(int index, String label)
-    {
-        super(index, label);
-    }
+	public static final CreativeTabs instance = new CreativeTabTAN(CreativeTabs.getNextID(), "tabToughAsNails");
 
-    @Override
-    public ItemStack getTabIconItem()
-    {
-        return new ItemStack(TANItems.tan_icon);
-    }
+	private CreativeTabTAN(int index, String label) {
+		super(index, label);
+	}
+
+	@Override
+	public ItemStack getTabIconItem() {
+		return new ItemStack(TANItems.tan_icon);
+	}
 }

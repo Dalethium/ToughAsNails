@@ -15,64 +15,55 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class ItemIceCharge extends Item
-{
+public class ItemIceCharge extends Item {
 
-    public ItemIceCharge()
-    {
-        this.setHasSubtypes(true);
-    }
-    
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
-    {
-        ItemStack itemStackIn = playerIn.getHeldItem(hand);
-        RayTraceResult movingobjectposition = this.rayTrace(worldIn, playerIn, true);
-        
-        if (movingobjectposition == null)
-        {
-            return new ActionResult(EnumActionResult.PASS, itemStackIn);
-        }
-        else
-        {
-            if (movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK)
-            {
-                BlockPos blockpos = movingobjectposition.getBlockPos();
+	public ItemIceCharge() {
+		this.setHasSubtypes(true);
+	}
 
-                if (!worldIn.isBlockModifiable(playerIn, blockpos))
-                {
-                    return new ActionResult(EnumActionResult.PASS, itemStackIn);
-                }
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+		ItemStack itemStackIn = playerIn.getHeldItem(hand);
+		RayTraceResult movingobjectposition = this.rayTrace(worldIn, playerIn, true);
 
-                if (!playerIn.canPlayerEdit(blockpos.offset(movingobjectposition.sideHit), movingobjectposition.sideHit, itemStackIn))
-                {
-                    return new ActionResult(EnumActionResult.PASS, itemStackIn);
-                }
+		if (movingobjectposition == null) {
+			return new ActionResult(EnumActionResult.PASS, itemStackIn);
+		} else {
+			if (movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK) {
+				BlockPos blockpos = movingobjectposition.getBlockPos();
 
-                BlockPos blockpos1 = blockpos.up();
-                IBlockState iblockstate = worldIn.getBlockState(blockpos);
+				if (!worldIn.isBlockModifiable(playerIn, blockpos)) {
+					return new ActionResult(EnumActionResult.PASS, itemStackIn);
+				}
 
-                if (iblockstate.getMaterial() == Material.WATER && ((Integer)iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0 && worldIn.isAirBlock(blockpos1))
-                {
-                    net.minecraftforge.common.util.BlockSnapshot blocksnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, blockpos1);
-                                        
-                    worldIn.setBlockState(blockpos, Blocks.ICE.getDefaultState());
-                    if (net.minecraftforge.event.ForgeEventFactory.onPlayerBlockPlace(playerIn, blocksnapshot, net.minecraft.util.EnumFacing.UP).isCanceled())
-                    {
-                        blocksnapshot.restore(true, false);
-                        return new ActionResult(EnumActionResult.PASS, itemStackIn);
-                    }
+				if (!playerIn.canPlayerEdit(blockpos.offset(movingobjectposition.sideHit), movingobjectposition.sideHit, itemStackIn)) {
+					return new ActionResult(EnumActionResult.PASS, itemStackIn);
+				}
 
-                    if (!playerIn.capabilities.isCreativeMode)
-                    {
-                        itemStackIn.setCount(itemStackIn.getCount() - 1);
-                    }
+				BlockPos blockpos1 = blockpos.up();
+				IBlockState iblockstate = worldIn.getBlockState(blockpos);
 
-                    playerIn.addStat(StatList.getObjectUseStats(this));
-                }
-            }
+				if (iblockstate.getMaterial() == Material.WATER && ((Integer) iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0
+						&& worldIn.isAirBlock(blockpos1)) {
+					net.minecraftforge.common.util.BlockSnapshot blocksnapshot =
+							net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, blockpos1);
 
-            return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
-        }
-    }
+					worldIn.setBlockState(blockpos, Blocks.ICE.getDefaultState());
+					if (net.minecraftforge.event.ForgeEventFactory.onPlayerBlockPlace(playerIn, blocksnapshot, net.minecraft.util.EnumFacing.UP)
+							.isCanceled()) {
+						blocksnapshot.restore(true, false);
+						return new ActionResult(EnumActionResult.PASS, itemStackIn);
+					}
+
+					if (!playerIn.capabilities.isCreativeMode) {
+						itemStackIn.setCount(itemStackIn.getCount() - 1);
+					}
+
+					playerIn.addStat(StatList.getObjectUseStats(this));
+				}
+			}
+
+			return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+		}
+	}
 }

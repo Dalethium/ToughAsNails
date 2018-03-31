@@ -7,18 +7,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderFreeze extends RenderLiving<EntityFreeze>
-{
-    private static final ResourceLocation freezeTextures = new ResourceLocation("toughasnails:textures/entity/freeze.png");
+public class RenderFreeze extends RenderLiving<EntityFreeze> {
 
-    public RenderFreeze(RenderManager renderManagerIn)
-    {
-        super(renderManagerIn, new ModelFreeze(), 0.5F);
-    }
+	private static final ResourceLocation freezeTextures = new ResourceLocation("toughasnails:textures/entity/freeze.png");
 
-    @Override
-    protected ResourceLocation getEntityTexture(EntityFreeze entity)
-    {
-        return freezeTextures;
-    }
+	public RenderFreeze(RenderManager renderManagerIn) {
+		super(renderManagerIn, new ModelFreeze(), 0.5F);
+	}
+
+	@Override
+	protected ResourceLocation getEntityTexture(EntityFreeze entity) {
+		return freezeTextures;
+	}
 }

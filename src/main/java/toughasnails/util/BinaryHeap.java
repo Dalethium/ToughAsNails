@@ -9,248 +9,213 @@ import java.util.Iterator;
  * 
  * @param <T>
  */
-public class BinaryHeap<K, T extends BinaryHeapNode<K>> implements Iterable<T>
-{
-    private static final int DEFAULT_CAPACITY = 10;
-    protected T[] array;
-    protected int size;
+public class BinaryHeap<K, T extends BinaryHeapNode<K>> implements Iterable<T> {
 
-    /**
-     * Constructs a new BinaryHeap.
-     */
-    @SuppressWarnings("unchecked")
-    public BinaryHeap()
-    {
-        // Java doesn't allow construction of arrays of placeholder data types
-        array = (T[]) new BinaryHeapNode[DEFAULT_CAPACITY];
-        size = 0;
-    }
+	private static final int DEFAULT_CAPACITY = 10;
 
-    /**
-     * Adds a value to the min-heap.
-     */
-    public void add(T value)
-    {
-        // grow array if needed
-        if (size >= array.length - 1)
-        {
-            array = this.resize();
-        }
+	protected T[] array;
 
-        // place element into heap at bottom
-        size++;
-        int index = size;
-        array[index] = value;
-        value.index = index;
+	protected int size;
 
-        bubbleUp(this.size);
-    }
+	/**
+	 * Constructs a new BinaryHeap.
+	 */
+	@SuppressWarnings("unchecked")
+	public BinaryHeap() {
+		// Java doesn't allow construction of arrays of placeholder data types
+		array = (T[]) new BinaryHeapNode[DEFAULT_CAPACITY];
+		size = 0;
+	}
 
-    /**
-     * Returns true if the heap has no elements; false otherwise.
-     */
-    public boolean isEmpty()
-    {
-        return size == 0;
-    }
+	/**
+	 * Adds a value to the min-heap.
+	 */
+	public void add(T value) {
+		// grow array if needed
+		if (size >= array.length - 1) {
+			array = this.resize();
+		}
 
-    /**
-     * Returns (but does not remove) the minimum element in the heap.
-     */
-    public T peek()
-    {
-        if (this.isEmpty())
-        {
-            return null;
-        }
+		// place element into heap at bottom
+		size++;
+		int index = size;
+		array[index] = value;
+		value.index = index;
 
-        return array[1];
-    }
+		bubbleUp(this.size);
+	}
 
-    /**
-     * Remove at index
-     */
-    public void remove(T elem)
-    {
-        int index = elem.index;
-        if (!elem.isEnqueued())
-            return; // else, index >= 1 assumed.
-        if (size < index || array[index] != elem)
-            throw new IllegalStateException();
-        if (index <= 1)
-        {
-            remove();
-            return;
-        }
+	/**
+	 * Returns true if the heap has no elements; false otherwise.
+	 */
+	public boolean isEmpty() {
+		return size == 0;
+	}
 
-        BinaryHeapNode<K> first = peek();
-        elem.setNodeKey(first.getSmallerKey());
-        bubbleUp(index);
-        remove();
-    }
+	/**
+	 * Returns (but does not remove) the minimum element in the heap.
+	 */
+	public T peek() {
+		if (this.isEmpty()) {
+			return null;
+		}
 
-    /**
-     * Removes and returns the minimum element in the heap.
-     */
-    public T remove()
-    {
-        // what do want return?
-        T result = peek();
-        if (result == null)
-            return null;
-        result.index = 0;
+		return array[1];
+	}
 
-        // get rid of the last leaf/decrement
-        array[1] = array[size];
-        array[1].index = 1;
-        array[size] = null;
-        size--;
+	/**
+	 * Remove at index
+	 */
+	public void remove(T elem) {
+		int index = elem.index;
+		if (!elem.isEnqueued()) return; // else, index >= 1 assumed.
+		if (size < index || array[index] != elem) throw new IllegalStateException();
+		if (index <= 1) {
+			remove();
+			return;
+		}
 
-        bubbleDown(1);
-        return result;
-    }
+		BinaryHeapNode<K> first = peek();
+		elem.setNodeKey(first.getSmallerKey());
+		bubbleUp(index);
+		remove();
+	}
 
-    /**
-     * Returns a String representation of BinaryHeap with values stored with
-     * heap structure and order properties.
-     */
-    public String toString()
-    {
-        return Arrays.toString(array);
-    }
+	/**
+	 * Removes and returns the minimum element in the heap.
+	 */
+	public T remove() {
+		// what do want return?
+		T result = peek();
+		if (result == null) return null;
+		result.index = 0;
 
-    /**
-     * Performs the "bubble down" operation to place the element that is at the
-     * root of the heap in its correct place so that the heap maintains the
-     * min-heap order property.
-     */
-    protected void bubbleDown(int index)
-    {
+		// get rid of the last leaf/decrement
+		array[1] = array[size];
+		array[1].index = 1;
+		array[size] = null;
+		size--;
 
-        // bubble down
-        while (hasLeftChild(index))
-        {
-            // which of my children is smaller?
-            int smallerChild = leftIndex(index);
+		bubbleDown(1);
+		return result;
+	}
 
-            // bubble with the smaller child, if I have a smaller child
-            if (hasRightChild(index) && array[leftIndex(index)].compareTo(array[rightIndex(index)]) > 0)
-            {
-                smallerChild = rightIndex(index);
-            }
+	/**
+	 * Returns a String representation of BinaryHeap with values stored with
+	 * heap structure and order properties.
+	 */
+	public String toString() {
+		return Arrays.toString(array);
+	}
 
-            if (array[index].compareTo(array[smallerChild]) > 0)
-            {
-                swap(index, smallerChild);
-            }
-            else
-            {
-                // otherwise, get outta here!
-                break;
-            }
+	/**
+	 * Performs the "bubble down" operation to place the element that is at the
+	 * root of the heap in its correct place so that the heap maintains the
+	 * min-heap order property.
+	 */
+	protected void bubbleDown(int index) {
 
-            // make sure to update loop counter/index of where last el is put
-            index = smallerChild;
-        }
-    }
+		// bubble down
+		while (hasLeftChild(index)) {
+			// which of my children is smaller?
+			int smallerChild = leftIndex(index);
 
-    /**
-     * Performs the "bubble up" operation to place a newly inserted element
-     * (i.e. the element that is at the size index) in its correct place so that
-     * the heap maintains the min-heap order property.
-     */
-    protected void bubbleUp(int index)
-    {
-        while (hasParent(index) && (parent(index).compareTo(array[index]) > 0))
-        {
-            // parent/child are out of order; swap them
-            swap(index, parentIndex(index));
-            index = parentIndex(index);
-        }
-    }
+			// bubble with the smaller child, if I have a smaller child
+			if (hasRightChild(index) && array[leftIndex(index)].compareTo(array[rightIndex(index)]) > 0) {
+				smallerChild = rightIndex(index);
+			}
 
-    protected boolean hasParent(int i)
-    {
-        return i > 1;
-    }
+			if (array[index].compareTo(array[smallerChild]) > 0) {
+				swap(index, smallerChild);
+			} else {
+				// otherwise, get outta here!
+				break;
+			}
 
-    protected int leftIndex(int i)
-    {
-        return i * 2;
-    }
+			// make sure to update loop counter/index of where last el is put
+			index = smallerChild;
+		}
+	}
 
-    protected int rightIndex(int i)
-    {
-        return i * 2 + 1;
-    }
+	/**
+	 * Performs the "bubble up" operation to place a newly inserted element
+	 * (i.e. the element that is at the size index) in its correct place so that
+	 * the heap maintains the min-heap order property.
+	 */
+	protected void bubbleUp(int index) {
+		while (hasParent(index) && (parent(index).compareTo(array[index]) > 0)) {
+			// parent/child are out of order; swap them
+			swap(index, parentIndex(index));
+			index = parentIndex(index);
+		}
+	}
 
-    protected boolean hasLeftChild(int i)
-    {
-        return leftIndex(i) <= size;
-    }
+	protected boolean hasParent(int i) {
+		return i > 1;
+	}
 
-    protected boolean hasRightChild(int i)
-    {
-        return rightIndex(i) <= size;
-    }
+	protected int leftIndex(int i) {
+		return i * 2;
+	}
 
-    protected BinaryHeapNode<K> parent(int i)
-    {
-        return array[parentIndex(i)];
-    }
+	protected int rightIndex(int i) {
+		return i * 2 + 1;
+	}
 
-    protected int parentIndex(int i)
-    {
-        return i / 2;
-    }
+	protected boolean hasLeftChild(int i) {
+		return leftIndex(i) <= size;
+	}
 
-    protected T[] resize()
-    {
-        return Arrays.copyOf(array, array.length * 2);
-    }
+	protected boolean hasRightChild(int i) {
+		return rightIndex(i) <= size;
+	}
 
-    public void clear()
-    {
-        for (int i = 1; i <= size; i++)
-        {
-            array[i] = null;
-        }
-        size = 0;
-    }
+	protected BinaryHeapNode<K> parent(int i) {
+		return array[parentIndex(i)];
+	}
 
-    protected void swap(int index1, int index2)
-    {
-        T tmp = array[index1];
+	protected int parentIndex(int i) {
+		return i / 2;
+	}
 
-        array[index1] = array[index2];
-        if (array[index1] != null)
-            array[index1].index = index1;
-        array[index2] = tmp;
-        if (array[index2] != null)
-            array[index2].index = index2;
-    }
+	protected T[] resize() {
+		return Arrays.copyOf(array, array.length * 2);
+	}
 
-    @Override
-    public Iterator<T> iterator()
-    {
-        return new BinaryHeapIterator();
-    }
+	public void clear() {
+		for (int i = 1; i <= size; i++) {
+			array[i] = null;
+		}
+		size = 0;
+	}
 
-    private class BinaryHeapIterator implements Iterator<T>
-    {
-        int curIndex = 0;
+	protected void swap(int index1, int index2) {
+		T tmp = array[index1];
 
-        @Override
-        public boolean hasNext()
-        {
-            return curIndex < size;
-        }
+		array[index1] = array[index2];
+		if (array[index1] != null) array[index1].index = index1;
+		array[index2] = tmp;
+		if (array[index2] != null) array[index2].index = index2;
+	}
 
-        @Override
-        public T next()
-        {
-            return array[++curIndex];
-        }
-    }
+	@Override
+	public Iterator<T> iterator() {
+		return new BinaryHeapIterator();
+	}
+
+	private class BinaryHeapIterator implements Iterator<T> {
+
+		int curIndex = 0;
+
+		@Override
+		public boolean hasNext() {
+			return curIndex < size;
+		}
+
+		@Override
+		public T next() {
+			return array[++curIndex];
+		}
+	}
 
 }

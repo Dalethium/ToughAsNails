@@ -18,45 +18,35 @@ import toughasnails.api.season.Season;
 import toughasnails.api.season.SeasonHelper;
 import toughasnails.api.config.GameplayOption;
 
-public class WeatherFrequencyHandler 
-{
-    @SubscribeEvent
-    public void onWorldTick(WorldTickEvent event)
-    {
-        if (event.phase == Phase.END && event.side == Side.SERVER && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS))
-        {
-            World world = event.world;
-            Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
-            
-            //During winter, the absolute maximum delay between rain/thunder should be 30 mins, unlike
-            //the standard 160 minutes. We only wish to modify the time between rain/thunder occurring, not
-            //their duration.
+public class WeatherFrequencyHandler {
 
-            if (season == Season.SPRING)
-            {
-                if (!world.getWorldInfo().isRaining() && world.getWorldInfo().getRainTime() > 96000)
-                {
-                    world.getWorldInfo().setRainTime(world.rand.nextInt(84000) + 12000);
-                }
-            }
-            else if (season == Season.SUMMER)
-            {
-                if (!world.getWorldInfo().isThundering() && world.getWorldInfo().getThunderTime() > 36000)
-                {
-                    world.getWorldInfo().setThunderTime(world.rand.nextInt(24000) + 12000);
-                }
-            }
-            else if (season == Season.WINTER)
-            {
-            	if (world.getWorldInfo().isThundering())
-                {
-                    world.getWorldInfo().setThundering(false);;
-                }
-                if (!world.getWorldInfo().isRaining() && world.getWorldInfo().getRainTime() > 36000)
-                {
-                    world.getWorldInfo().setRainTime(world.rand.nextInt(24000) + 12000);
-                }
-            }
-        }
-    }
+	@SubscribeEvent
+	public void onWorldTick(WorldTickEvent event) {
+		if (event.phase == Phase.END && event.side == Side.SERVER && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)) {
+			World world = event.world;
+			Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
+
+			// During winter, the absolute maximum delay between rain/thunder should be 30 mins, unlike
+			// the standard 160 minutes. We only wish to modify the time between rain/thunder occurring, not
+			// their duration.
+
+			if (season == Season.SPRING) {
+				if (!world.getWorldInfo().isRaining() && world.getWorldInfo().getRainTime() > 96000) {
+					world.getWorldInfo().setRainTime(world.rand.nextInt(84000) + 12000);
+				}
+			} else if (season == Season.SUMMER) {
+				if (!world.getWorldInfo().isThundering() && world.getWorldInfo().getThunderTime() > 36000) {
+					world.getWorldInfo().setThunderTime(world.rand.nextInt(24000) + 12000);
+				}
+			} else if (season == Season.WINTER) {
+				if (world.getWorldInfo().isThundering()) {
+					world.getWorldInfo().setThundering(false);
+					;
+				}
+				if (!world.getWorldInfo().isRaining() && world.getWorldInfo().getRainTime() > 36000) {
+					world.getWorldInfo().setRainTime(world.rand.nextInt(24000) + 12000);
+				}
+			}
+		}
+	}
 }

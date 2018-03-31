@@ -13,63 +13,55 @@ import net.minecraft.world.biome.Biome;
 import toughasnails.api.config.SeasonsOption;
 import toughasnails.api.config.SyncedConfig;
 
-public class SeasonHelper
-{
-    public static ISeasonDataProvider dataProvider;
+public class SeasonHelper {
 
-    /**
-     * Obtains data about the state of the season cycle in the world. This works
-     * both on the client and the server.
-     */
-    public static ISeasonData getSeasonData(World world)
-    {
-        ISeasonData data;
+	public static ISeasonDataProvider dataProvider;
 
-        if (!world.isRemote)
-        {
-            data = dataProvider.getServerSeasonData(world);
-        }
-        else
-        {
-            data = dataProvider.getClientSeasonData();
-        }
+	/**
+	 * Obtains data about the state of the season cycle in the world. This works
+	 * both on the client and the server.
+	 */
+	public static ISeasonData getSeasonData(World world) {
+		ISeasonData data;
 
-        return data;
-    }
+		if (!world.isRemote) {
+			data = dataProvider.getServerSeasonData(world);
+		} else {
+			data = dataProvider.getClientSeasonData();
+		}
 
-    /**
-     * Checks if the season provided allows snow to fall at a certain biome
-     * temperature.
-     * 
-     * @param season
-     *            The season to check
-     * @param temperature
-     *            The biome temperature to check
-     * @return True if suitable, otherwise false
-     */
-    public static boolean canSnowAtTempInSeason(Season season, float temperature)
-    {
-        // If we're in winter, the temperature can be anything equal to or below
-        // 0.7
-        return temperature < 0.15F || (season == Season.WINTER && temperature <= 0.7F && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS));
-    }
+		return data;
+	}
 
-    public interface ISeasonDataProvider
-    {
-        ISeasonData getServerSeasonData(World world);
+	/**
+	 * Checks if the season provided allows snow to fall at a certain biome
+	 * temperature.
+	 * 
+	 * @param season
+	 *            The season to check
+	 * @param temperature
+	 *            The biome temperature to check
+	 * @return True if suitable, otherwise false
+	 */
+	public static boolean canSnowAtTempInSeason(Season season, float temperature) {
+		// If we're in winter, the temperature can be anything equal to or below
+		// 0.7
+		return temperature < 0.15F
+				|| (season == Season.WINTER && temperature <= 0.7F && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS));
+	}
 
-        ISeasonData getClientSeasonData();
-    }
+	public interface ISeasonDataProvider {
 
-    public static float getSeasonFloatTemperature(Biome biome, BlockPos pos, Season season)
-    {
-        if (biome.getTemperature() <= 0.7F && season == Season.WINTER && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS))
-        {
-            return 0.0F;
-        }
-        else
-        {
-            return biome.getFloatTemperature(pos);
-        }
-    }
+		ISeasonData getServerSeasonData(World world);
+
+		ISeasonData getClientSeasonData();
+	}
+
+	public static float getSeasonFloatTemperature(Biome biome, BlockPos pos, Season season) {
+		if (biome.getTemperature() <= 0.7F && season == Season.WINTER && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)) {
+			return 0.0F;
+		} else {
+			return biome.getFloatTemperature(pos);
+		}
+	}
 }

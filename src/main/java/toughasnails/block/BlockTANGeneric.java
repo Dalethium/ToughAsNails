@@ -9,31 +9,39 @@ import net.minecraft.item.ItemBlock;
 import toughasnails.api.ITANBlock;
 import toughasnails.item.ItemTANBlock;
 
-public class BlockTANGeneric extends Block implements ITANBlock
-{
-    
-    // implement IBOPBlock
-    @Override
-    public Class<? extends ItemBlock> getItemClass() { return ItemTANBlock.class; }
-    @Override
-    public IProperty[] getPresetProperties() { return new IProperty[] {}; }
-    @Override
-    public IProperty[] getNonRenderingProperties() { return null; }
-    @Override
-    public String getStateName(IBlockState state) {return "";}
+public class BlockTANGeneric extends Block implements ITANBlock {
 
-    
-    public BlockTANGeneric() {
-        // use rock as default material
-        this(Material.ROCK);
-    }
-    
-    public BlockTANGeneric(Material material)
-    {
-        super(material);
-        // set some defaults
-        this.setHardness(1.0F);
-        this.setSoundType(SoundType.STONE);
-    }
-    
+	// implement IBOPBlock
+	@Override
+	public Class<? extends ItemBlock> getItemClass() {
+		return ItemTANBlock.class;
+	}
+
+	@Override
+	public IProperty[] getPresetProperties() {
+		return new IProperty[] {};
+	}
+
+	@Override
+	public IProperty[] getNonRenderingProperties() {
+		return null;
+	}
+
+	@Override
+	public String getStateName(IBlockState state) {
+		return "";
+	}
+
+	public BlockTANGeneric() {
+		// use rock as default material
+		this(Material.ROCK);
+	}
+
+	public BlockTANGeneric(Material material) {
+		super(material);
+		// set some defaults
+		this.setHardness(1.0F);
+		this.setSoundType(SoundType.STONE);
+	}
+
 }

@@ -1,6 +1,5 @@
 package toughasnails.particle;
 
-public enum TANParticleTypes
-{
-    SNOWFLAKE;
+public enum TANParticleTypes {
+	SNOWFLAKE;
 }

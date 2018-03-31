@@ -13,21 +13,21 @@ import toughasnails.config.GameplayConfig;
 import toughasnails.core.ToughAsNails;
 import toughasnails.init.ModConfig;
 
-public class GuiTANConfig extends GuiConfig
-{
-    public GuiTANConfig(GuiScreen parentScreen)
-    {
-        super(parentScreen, GuiTANConfig.getConfigElements(), ToughAsNails.MOD_ID, false, false, "/toughasnails");
-    }
+public class GuiTANConfig extends GuiConfig {
 
-    private static List<IConfigElement> getConfigElements()
-    {
-        List<IConfigElement> list = new ArrayList<IConfigElement>();
+	public GuiTANConfig(GuiScreen parentScreen) {
+		super(parentScreen, GuiTANConfig.getConfigElements(), ToughAsNails.MOD_ID, false, false, "/toughasnails");
+	}
 
-        List<IConfigElement> SURVIVAL_SETTINGS = new ConfigElement(ModConfig.gameplay.config.getCategory(GameplayConfig.SURVIVAL_SETTINGS.toLowerCase())).getChildElements();
+	private static List<IConfigElement> getConfigElements() {
+		List<IConfigElement> list = new ArrayList<IConfigElement>();
 
-        list.add(new DummyConfigElement.DummyCategoryElement(I18n.translateToLocal("config.category.survivalSettings.title"), "config.category.arrowSettings", SURVIVAL_SETTINGS));
+		List<IConfigElement> SURVIVAL_SETTINGS =
+				new ConfigElement(ModConfig.gameplay.config.getCategory(GameplayConfig.SURVIVAL_SETTINGS.toLowerCase())).getChildElements();
 
-        return list;
-    }
+		list.add(new DummyConfigElement.DummyCategoryElement(I18n.translateToLocal("config.category.survivalSettings.title"),
+				"config.category.arrowSettings", SURVIVAL_SETTINGS));
+
+		return list;
+	}
 }

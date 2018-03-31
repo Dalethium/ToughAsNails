@@ -17,50 +17,46 @@ import toughasnails.api.HealthHelper;
 import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.config.GameplayOption;
 
-public class HealthOverlayHandler
-{
-    public static final ResourceLocation OVERLAY = new ResourceLocation("toughasnails:textures/gui/overlay.png");
-    
-    private final Random random = new Random();
-    private final Minecraft minecraft = Minecraft.getMinecraft();
-    
-    @SubscribeEvent
-    public void onPostRenderOverlay(RenderGameOverlayEvent.Pre event)
-    {
-        ScaledResolution resolution = event.getResolution();
-        int width = resolution.getScaledWidth();
-        int height = resolution.getScaledHeight();
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        
-        if (event.getType() == ElementType.HEALTH && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH))
-        {
-            minecraft.getTextureManager().bindTexture(OVERLAY);
+public class HealthOverlayHandler {
 
-            if (minecraft.playerController.gameIsSurvivalOrAdventure())
-            {
-                drawInactiveHearts(width, height, HealthHelper.getInactiveHearts(player));
-            }
-        }
-    }
-    
-    private void drawInactiveHearts(int width, int height, int inactiveHearts)
-    {
-        GlStateManager.disableDepth();
-        GlStateManager.enableBlend();
-        int left = width / 2 - 91;
-        int top = height - 39;
-        
-        for (int i = 0; i < inactiveHearts; i++)
-        {
-            int activeOffset = 8 * (10 - inactiveHearts);
-            int startX = left + i * 8 + activeOffset;
-            int startY = top;
-             
-            drawTexturedModalRect(startX, startY, 0, 43, 9, 9);
-        }
-        
-        minecraft.getTextureManager().bindTexture(Gui.ICONS);
-        GlStateManager.disableBlend();
-        GlStateManager.enableDepth();
-    }
+	public static final ResourceLocation OVERLAY = new ResourceLocation("toughasnails:textures/gui/overlay.png");
+
+	private final Random random = new Random();
+
+	private final Minecraft minecraft = Minecraft.getMinecraft();
+
+	@SubscribeEvent
+	public void onPostRenderOverlay(RenderGameOverlayEvent.Pre event) {
+		ScaledResolution resolution = event.getResolution();
+		int width = resolution.getScaledWidth();
+		int height = resolution.getScaledHeight();
+		EntityPlayerSP player = Minecraft.getMinecraft().player;
+
+		if (event.getType() == ElementType.HEALTH && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_LOWERED_STARTING_HEALTH)) {
+			minecraft.getTextureManager().bindTexture(OVERLAY);
+
+			if (minecraft.playerController.gameIsSurvivalOrAdventure()) {
+				drawInactiveHearts(width, height, HealthHelper.getInactiveHearts(player));
+			}
+		}
+	}
+
+	private void drawInactiveHearts(int width, int height, int inactiveHearts) {
+		GlStateManager.disableDepth();
+		GlStateManager.enableBlend();
+		int left = width / 2 - 91;
+		int top = height - 39;
+
+		for (int i = 0; i < inactiveHearts; i++) {
+			int activeOffset = 8 * (10 - inactiveHearts);
+			int startX = left + i * 8 + activeOffset;
+			int startY = top;
+
+			drawTexturedModalRect(startX, startY, 0, 43, 9, 9);
+		}
+
+		minecraft.getTextureManager().bindTexture(Gui.ICONS);
+		GlStateManager.disableBlend();
+		GlStateManager.enableDepth();
+	}
 }

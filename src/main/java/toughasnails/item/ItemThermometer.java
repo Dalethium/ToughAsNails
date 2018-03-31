@@ -24,33 +24,33 @@ import toughasnails.api.temperature.TemperatureScale;
 import toughasnails.season.SeasonTime;
 import toughasnails.temperature.TemperatureHandler;
 
-public class ItemThermometer extends Item
-{
-    public ItemThermometer()
-    {
-        this.addPropertyOverride(new ResourceLocation("temperature"), new IItemPropertyGetter()
-        {
-            @SideOnly(Side.CLIENT)
-            double field_185088_a;
-            @SideOnly(Side.CLIENT)
-            double field_185089_b;
-            @SideOnly(Side.CLIENT)
-            int ticks;
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            public float apply(ItemStack stack, World world, EntityLivingBase entity)
-            {
-                if (entity == null || !(entity instanceof EntityPlayer))
-                    return 0.0F;
-                
-                EntityPlayer player = (EntityPlayer)entity;
-                
-                if (world == null) world = entity.world;
+public class ItemThermometer extends Item {
 
-                TemperatureHandler tempHandler = (TemperatureHandler)TemperatureHelper.getTemperatureData(player);
-                return (float)MathHelper.clamp(tempHandler.debugger.targetTemperature, 0, TemperatureScale.getScaleTotal()) / (float)TemperatureScale.getScaleTotal();
-            }
-        });
-    }
+	public ItemThermometer() {
+		this.addPropertyOverride(new ResourceLocation("temperature"), new IItemPropertyGetter() {
+
+			@SideOnly(Side.CLIENT)
+			double field_185088_a;
+
+			@SideOnly(Side.CLIENT)
+			double field_185089_b;
+
+			@SideOnly(Side.CLIENT)
+			int ticks;
+
+			@Override
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, World world, EntityLivingBase entity) {
+				if (entity == null || !(entity instanceof EntityPlayer)) return 0.0F;
+
+				EntityPlayer player = (EntityPlayer) entity;
+
+				if (world == null) world = entity.world;
+
+				TemperatureHandler tempHandler = (TemperatureHandler) TemperatureHelper.getTemperatureData(player);
+				return (float) MathHelper.clamp(tempHandler.debugger.targetTemperature, 0, TemperatureScale.getScaleTotal())
+						/ (float) TemperatureScale.getScaleTotal();
+			}
+		});
+	}
 }

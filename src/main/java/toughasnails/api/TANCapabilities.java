@@ -12,10 +12,11 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import toughasnails.api.stat.capability.ITemperature;
 import toughasnails.api.stat.capability.IThirst;
 
-public class TANCapabilities 
-{
-    @CapabilityInject(ITemperature.class)
-    public static final Capability<ITemperature> TEMPERATURE = null;
-    @CapabilityInject(IThirst.class)
-    public static final Capability<IThirst> THIRST = null;
+public class TANCapabilities {
+
+	@CapabilityInject(ITemperature.class)
+	public static final Capability<ITemperature> TEMPERATURE = null;
+
+	@CapabilityInject(IThirst.class)
+	public static final Capability<IThirst> THIRST = null;
 }

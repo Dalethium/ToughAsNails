@@ -24,235 +24,209 @@ import toughasnails.core.ToughAsNails;
 import toughasnails.entities.projectile.EntityIceball;
 import toughasnails.particle.TANParticleTypes;
 
-public class EntityFreeze extends EntityMob implements IMob
-{
-    private float heightOffset = 0.5F;
-    private int heightOffsetUpdateTime;
+public class EntityFreeze extends EntityMob implements IMob {
 
-    public EntityFreeze(World worldIn)
-    {
-        super(worldIn);
-        this.experienceValue = 10;
-        this.tasks.addTask(4, new EntityFreeze.AIFireballAttack(this));
-        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWander(this, 1.0D));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
-    }
+	private float heightOffset = 0.5F;
 
-    @Override
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(48.0D);
-    }
+	private int heightOffsetUpdateTime;
 
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-    }
+	public EntityFreeze(World worldIn) {
+		super(worldIn);
+		this.experienceValue = 10;
+		this.tasks.addTask(4, new EntityFreeze.AIFireballAttack(this));
+		this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
+		this.tasks.addTask(7, new EntityAIWander(this, 1.0D));
+		this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+		this.tasks.addTask(8, new EntityAILookIdle(this));
+		this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
+		this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+	}
 
-    /*protected String getLivingSound()
-    {
-        return "mob.freeze.breathe";
-    }
+	@Override
+	protected void applyEntityAttributes() {
+		super.applyEntityAttributes();
+		this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+		this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(48.0D);
+	}
 
-    protected String getHurtSound()
-    {
-        return "mob.freeze.hit";
-    }
+	@Override
+	protected void entityInit() {
+		super.entityInit();
+	}
 
-    protected String getDeathSound()
-    {
-        return "mob.freeze.death";
-    }*/
+	/*protected String getLivingSound()
+	{
+	    return "mob.freeze.breathe";
+	}
+	
+	protected String getHurtSound()
+	{
+	    return "mob.freeze.hit";
+	}
+	
+	protected String getDeathSound()
+	{
+	    return "mob.freeze.death";
+	}*/
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getBrightnessForRender(float partialTicks)
-    {
-        return 15728880;
-    }
-    
-    @Override
-    public float getBrightness(float partialTicks)
-    {
-        return 1.0F;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getBrightnessForRender(float partialTicks) {
+		return 15728880;
+	}
 
-    @Override
-    public void onLivingUpdate()
-    {
-        if (!this.onGround && this.motionY < 0.0D)
-        {
-            this.motionY *= 0.6D;
-        }
+	@Override
+	public float getBrightness(float partialTicks) {
+		return 1.0F;
+	}
 
-        if (this.world.isRemote)
-        {
-            /*if (this.rand.nextInt(24) == 0 && !this.isSilent())
-            {
-                this.world.playSound(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D, "fire.fire", 1.0F + this.rand.nextFloat(), this.rand.nextFloat() * 0.7F + 0.3F, false);
-            }*/
+	@Override
+	public void onLivingUpdate() {
+		if (!this.onGround && this.motionY < 0.0D) {
+			this.motionY *= 0.6D;
+		}
 
-            for (int i = 0; i < 2; ++i)
-            {
-            	ToughAsNails.proxy.spawnParticle(TANParticleTypes.SNOWFLAKE, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, 0.0D, 0.0D, 0.0D, new int[0]);
-            }
-        }
+		if (this.world.isRemote) {
+			/*if (this.rand.nextInt(24) == 0 && !this.isSilent())
+			{
+			    this.world.playSound(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D, "fire.fire", 1.0F + this.rand.nextFloat(), this.rand.nextFloat() * 0.7F + 0.3F, false);
+			}*/
 
-        super.onLivingUpdate();
-    }
+			for (int i = 0; i < 2; ++i) {
+				ToughAsNails.proxy.spawnParticle(TANParticleTypes.SNOWFLAKE, this.world,
+						this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width,
+						this.posY + this.rand.nextDouble() * (double) this.height,
+						this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D, new int[0]);
+			}
+		}
 
-    @Override
-    protected void updateAITasks()
-    {
-        if (this.isBurning())
-        {
-            this.attackEntityFrom(DamageSource.IN_FIRE, 1.0F);
-        }
+		super.onLivingUpdate();
+	}
 
-        --this.heightOffsetUpdateTime;
+	@Override
+	protected void updateAITasks() {
+		if (this.isBurning()) {
+			this.attackEntityFrom(DamageSource.IN_FIRE, 1.0F);
+		}
 
-        if (this.heightOffsetUpdateTime <= 0)
-        {
-            this.heightOffsetUpdateTime = 100;
-            this.heightOffset = 0.5F + (float)this.rand.nextGaussian() * 3.0F;
-        }
+		--this.heightOffsetUpdateTime;
 
-        EntityLivingBase entitylivingbase = this.getAttackTarget();
+		if (this.heightOffsetUpdateTime <= 0) {
+			this.heightOffsetUpdateTime = 100;
+			this.heightOffset = 0.5F + (float) this.rand.nextGaussian() * 3.0F;
+		}
 
-        if (entitylivingbase != null && entitylivingbase.posY + (double)entitylivingbase.getEyeHeight() > this.posY + (double)this.getEyeHeight() + (double)this.heightOffset)
-        {
-            this.motionY += (0.30000001192092896D - this.motionY) * 0.30000001192092896D;
-            this.isAirBorne = true;
-        }
+		EntityLivingBase entitylivingbase = this.getAttackTarget();
 
-        super.updateAITasks();
-    }
+		if (entitylivingbase != null && entitylivingbase.posY + (double) entitylivingbase.getEyeHeight() > this.posY
+				+ (double) this.getEyeHeight() + (double) this.heightOffset) {
+			this.motionY += (0.30000001192092896D - this.motionY) * 0.30000001192092896D;
+			this.isAirBorne = true;
+		}
 
-    @Override
-    public void fall(float distance, float damageMultiplier)
-    {
-    }
+		super.updateAITasks();
+	}
 
-    @Override
-    protected Item getDropItem()
-    {
-        return TANItems.freeze_rod;
-    }
+	@Override
+	public void fall(float distance, float damageMultiplier) {
+	}
 
-    @Override
-    protected void dropFewItems(boolean p_70628_1_, int p_70628_2_)
-    {
-        if (p_70628_1_)
-        {
-            int i = this.rand.nextInt(2 + p_70628_2_);
+	@Override
+	protected Item getDropItem() {
+		return TANItems.freeze_rod;
+	}
 
-            for (int j = 0; j < i; ++j)
-            {
-                this.dropItem(TANItems.freeze_rod, 1);
-            }
-        }
-    }
+	@Override
+	protected void dropFewItems(boolean p_70628_1_, int p_70628_2_) {
+		if (p_70628_1_) {
+			int i = this.rand.nextInt(2 + p_70628_2_);
 
-    @Override
-    protected boolean isValidLightLevel()
-    {
-        return true;
-    }
+			for (int j = 0; j < i; ++j) {
+				this.dropItem(TANItems.freeze_rod, 1);
+			}
+		}
+	}
 
-    static class AIFireballAttack extends EntityAIBase
-        {
-            private EntityFreeze freeze;
-            private int field_179467_b;
-            private int field_179468_c;
+	@Override
+	protected boolean isValidLightLevel() {
+		return true;
+	}
 
-            public AIFireballAttack(EntityFreeze p_i45846_1_)
-            {
-                this.freeze = p_i45846_1_;
-                this.setMutexBits(3);
-            }
+	static class AIFireballAttack extends EntityAIBase {
 
-            public boolean shouldExecute()
-            {
-                EntityLivingBase entitylivingbase = this.freeze.getAttackTarget();
-                return entitylivingbase != null && entitylivingbase.isEntityAlive();
-            }
+		private EntityFreeze freeze;
 
-            public void startExecuting()
-            {
-                this.field_179467_b = 0;
-            }
+		private int field_179467_b;
 
-            public void updateTask()
-            {
-                --this.field_179468_c;
-                EntityLivingBase entitylivingbase = this.freeze.getAttackTarget();
-                double d0 = this.freeze.getDistanceSqToEntity(entitylivingbase);
+		private int field_179468_c;
 
-                if (d0 < 4.0D)
-                {
-                    if (this.field_179468_c <= 0)
-                    {
-                        this.field_179468_c = 20;
-                        this.freeze.attackEntityAsMob(entitylivingbase);
-                    }
+		public AIFireballAttack(EntityFreeze p_i45846_1_) {
+			this.freeze = p_i45846_1_;
+			this.setMutexBits(3);
+		}
 
-                    this.freeze.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
-                }
-                else if (d0 < 256.0D)
-                {
-                    double d1 = entitylivingbase.posX - this.freeze.posX;
-                    double d2 = entitylivingbase.getEntityBoundingBox().minY + (double)(entitylivingbase.height / 2.0F) - (this.freeze.posY + (double)(this.freeze.height / 2.0F));
-                    double d3 = entitylivingbase.posZ - this.freeze.posZ;
+		public boolean shouldExecute() {
+			EntityLivingBase entitylivingbase = this.freeze.getAttackTarget();
+			return entitylivingbase != null && entitylivingbase.isEntityAlive();
+		}
 
-                    if (this.field_179468_c <= 0)
-                    {
-                        ++this.field_179467_b;
+		public void startExecuting() {
+			this.field_179467_b = 0;
+		}
 
-                        if (this.field_179467_b == 1)
-                        {
-                            this.field_179468_c = 60;
-                        }
-                        else if (this.field_179467_b <= 4)
-                        {
-                            this.field_179468_c = 6;
-                        }
-                        else
-                        {
-                            this.field_179468_c = 100;
-                            this.field_179467_b = 0;
-                        }
+		public void updateTask() {
+			--this.field_179468_c;
+			EntityLivingBase entitylivingbase = this.freeze.getAttackTarget();
+			double d0 = this.freeze.getDistanceSqToEntity(entitylivingbase);
 
-                        if (this.field_179467_b > 1)
-                        {
-                            float f = MathHelper.sqrt(MathHelper.sqrt(d0)) * 0.5F;
-                            this.freeze.world.playEvent((EntityPlayer)null, 1009, new BlockPos((int)this.freeze.posX, (int)this.freeze.posY, (int)this.freeze.posZ), 0);
+			if (d0 < 4.0D) {
+				if (this.field_179468_c <= 0) {
+					this.field_179468_c = 20;
+					this.freeze.attackEntityAsMob(entitylivingbase);
+				}
 
-                            for (int i = 0; i < 1; ++i)
-                            {
-                                EntityIceball entityiceball = new EntityIceball(this.freeze.world, this.freeze, d1 + this.freeze.getRNG().nextGaussian() * (double)f, d2, d3 + this.freeze.getRNG().nextGaussian() * (double)f);
-                                entityiceball.posY = this.freeze.posY + (double)(this.freeze.height / 2.0F) + 0.5D;
-                                this.freeze.world.spawnEntity(entityiceball);
-                            }
-                        }
-                    }
+				this.freeze.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
+			} else if (d0 < 256.0D) {
+				double d1 = entitylivingbase.posX - this.freeze.posX;
+				double d2 = entitylivingbase.getEntityBoundingBox().minY + (double) (entitylivingbase.height / 2.0F)
+						- (this.freeze.posY + (double) (this.freeze.height / 2.0F));
+				double d3 = entitylivingbase.posZ - this.freeze.posZ;
 
-                    this.freeze.getLookHelper().setLookPositionWithEntity(entitylivingbase, 10.0F, 10.0F);
-                }
-                else
-                {
-                    this.freeze.getNavigator().clearPathEntity();
-                    this.freeze.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
-                }
+				if (this.field_179468_c <= 0) {
+					++this.field_179467_b;
 
-                super.updateTask();
-            }
-        }
+					if (this.field_179467_b == 1) {
+						this.field_179468_c = 60;
+					} else if (this.field_179467_b <= 4) {
+						this.field_179468_c = 6;
+					} else {
+						this.field_179468_c = 100;
+						this.field_179467_b = 0;
+					}
+
+					if (this.field_179467_b > 1) {
+						float f = MathHelper.sqrt(MathHelper.sqrt(d0)) * 0.5F;
+						this.freeze.world.playEvent((EntityPlayer) null, 1009,
+								new BlockPos((int) this.freeze.posX, (int) this.freeze.posY, (int) this.freeze.posZ), 0);
+
+						for (int i = 0; i < 1; ++i) {
+							EntityIceball entityiceball =
+									new EntityIceball(this.freeze.world, this.freeze, d1 + this.freeze.getRNG().nextGaussian() * (double) f, d2,
+											d3 + this.freeze.getRNG().nextGaussian() * (double) f);
+							entityiceball.posY = this.freeze.posY + (double) (this.freeze.height / 2.0F) + 0.5D;
+							this.freeze.world.spawnEntity(entityiceball);
+						}
+					}
+				}
+
+				this.freeze.getLookHelper().setLookPositionWithEntity(entitylivingbase, 10.0F, 10.0F);
+			} else {
+				this.freeze.getNavigator().clearPathEntity();
+				this.freeze.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
+			}
+
+			super.updateTask();
+		}
+	}
 }

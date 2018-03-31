@@ -7,22 +7,18 @@
  ******************************************************************************/
 package toughasnails.api.config;
 
-public enum TemperatureOption implements ISyncedOption
-{
-    ENABLE_TEMPERATURE("Enable Body Temperature"),
-    BASE_TEMPERATURE_CHANGE_TICKS("Base Temperature Change Ticks"),
-    MAX_RATE_MODIFIER("Max Rate Modifier");
+public enum TemperatureOption implements ISyncedOption {
+	ENABLE_TEMPERATURE("Enable Body Temperature"), BASE_TEMPERATURE_CHANGE_TICKS("Base Temperature Change Ticks"),
+	MAX_RATE_MODIFIER("Max Rate Modifier");
 
-    private final String optionName;
+	private final String optionName;
 
-    TemperatureOption(String name)
-    {
-        this.optionName = name;
-    }
+	TemperatureOption(String name) {
+		this.optionName = name;
+	}
 
-    @Override
-    public String getOptionName()
-    {
-        return this.optionName;
-    }
+	@Override
+	public String getOptionName() {
+		return this.optionName;
+	}
 }

@@ -11,10 +11,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import toughasnails.api.TANCapabilities;
 import toughasnails.api.stat.capability.IThirst;
 
-public class ThirstHelper 
-{
-    public static IThirst getThirstData(EntityPlayer player)
-    {
-        return player.getCapability(TANCapabilities.THIRST, null);
-    }
+public class ThirstHelper {
+
+	public static IThirst getThirstData(EntityPlayer player) {
+		return player.getCapability(TANCapabilities.THIRST, null);
+	}
 }

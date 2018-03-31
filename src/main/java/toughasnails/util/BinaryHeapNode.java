@@ -1,27 +1,24 @@
 package toughasnails.util;
 
-public abstract class BinaryHeapNode<K> implements Comparable<BinaryHeapNode<K>>
-{
-    int index;
+public abstract class BinaryHeapNode<K> implements Comparable<BinaryHeapNode<K>> {
 
-    protected BinaryHeapNode()
-    {
-        this.index = 0;
-    }
+	int index;
 
-    public int getIndex()
-    {
-        return index;
-    }
+	protected BinaryHeapNode() {
+		this.index = 0;
+	}
 
-    public boolean isEnqueued()
-    {
-        return index >= 1;
-    }
+	public int getIndex() {
+		return index;
+	}
 
-    public abstract K getSmallerKey();
+	public boolean isEnqueued() {
+		return index >= 1;
+	}
 
-    public abstract void setNodeKey(K key);
+	public abstract K getSmallerKey();
 
-    public abstract long getNodeKey();
+	public abstract void setNodeKey(K key);
+
+	public abstract long getNodeKey();
 }

@@ -2,102 +2,86 @@ package toughasnails.season;
 
 import net.minecraft.world.chunk.Chunk;
 
-public class ChunkData
-{
-    private final ChunkKey key;
-    private Chunk chunk;
+public class ChunkData {
 
-    private long lastPatchedTime;
-    private boolean isToBePatched;
-    private ActiveChunkData belongingAC;
-    private int notifyNeighborsOnLoadingPopulated;
+	private final ChunkKey key;
 
-    public ChunkData(ChunkKey key, Chunk chunk, long lastPatchedTime)
-    {
-        this.key = key;
-        this.chunk = chunk;
-        this.lastPatchedTime = lastPatchedTime;
-        this.isToBePatched = false;
-        this.belongingAC = null;
-        this.notifyNeighborsOnLoadingPopulated = 0;
-    }
+	private Chunk chunk;
 
-    public void setNeighborToNotify(int idx, boolean bToSet)
-    {
-        if (idx < 0 || idx >= 8)
-            throw new IllegalArgumentException("index should be between 0 and 7");
-        int bit = 0x1 << idx;
-        if (bToSet)
-            this.notifyNeighborsOnLoadingPopulated |= bit;
-        else
-            this.notifyNeighborsOnLoadingPopulated &= ~bit;
-    }
+	private long lastPatchedTime;
 
-    public boolean isNeighborToBeNotified(int idx)
-    {
-        if (idx < 0 || idx >= 8)
-            throw new IllegalArgumentException("index should be between 0 and 7");
-        int bit = 0x1 << idx;
-        return (this.notifyNeighborsOnLoadingPopulated & bit) != 0;
-    }
+	private boolean isToBePatched;
 
-    public void setToBePatched(boolean bToBePatched)
-    {
-        this.isToBePatched = bToBePatched;
-    }
+	private ActiveChunkData belongingAC;
 
-    public void setBelongingAC(ActiveChunkData belongingAC)
-    {
-        this.belongingAC = belongingAC;
-    }
+	private int notifyNeighborsOnLoadingPopulated;
 
-    public void setLoadedChunk(Chunk chunk)
-    {
-        if (chunk == null)
-            throw new IllegalArgumentException("chunk must be non null. Use clearLoadedChunk() for other case.");
-        this.chunk = chunk;
-    }
+	public ChunkData(ChunkKey key, Chunk chunk, long lastPatchedTime) {
+		this.key = key;
+		this.chunk = chunk;
+		this.lastPatchedTime = lastPatchedTime;
+		this.isToBePatched = false;
+		this.belongingAC = null;
+		this.notifyNeighborsOnLoadingPopulated = 0;
+	}
 
-    public boolean getIsToBePatched()
-    {
-        return isToBePatched;
-    }
+	public void setNeighborToNotify(int idx, boolean bToSet) {
+		if (idx < 0 || idx >= 8) throw new IllegalArgumentException("index should be between 0 and 7");
+		int bit = 0x1 << idx;
+		if (bToSet) this.notifyNeighborsOnLoadingPopulated |= bit;
+		else this.notifyNeighborsOnLoadingPopulated &= ~bit;
+	}
 
-    public ActiveChunkData getBelongingAC()
-    {
-        return belongingAC;
-    }
+	public boolean isNeighborToBeNotified(int idx) {
+		if (idx < 0 || idx >= 8) throw new IllegalArgumentException("index should be between 0 and 7");
+		int bit = 0x1 << idx;
+		return (this.notifyNeighborsOnLoadingPopulated & bit) != 0;
+	}
 
-    public ChunkKey getKey()
-    {
-        return key;
-    }
+	public void setToBePatched(boolean bToBePatched) {
+		this.isToBePatched = bToBePatched;
+	}
 
-    public Chunk getChunk()
-    {
-        return chunk;
-    }
+	public void setBelongingAC(ActiveChunkData belongingAC) {
+		this.belongingAC = belongingAC;
+	}
 
-    public void setPatchTimeUptodate()
-    {
-        if (chunk != null)
-            this.lastPatchedTime = chunk.getWorld().getTotalWorldTime();
-    }
+	public void setLoadedChunk(Chunk chunk) {
+		if (chunk == null) throw new IllegalArgumentException("chunk must be non null. Use clearLoadedChunk() for other case.");
+		this.chunk = chunk;
+	}
 
-    public void setPatchTimeTo(long lastPatchedTime)
-    {
-        this.lastPatchedTime = lastPatchedTime;
-    }
+	public boolean getIsToBePatched() {
+		return isToBePatched;
+	}
 
-    public long getLastPatchedTime()
-    {
-        return lastPatchedTime;
-    }
+	public ActiveChunkData getBelongingAC() {
+		return belongingAC;
+	}
 
-    public void clearLoadedChunk()
-    {
-        setToBePatched(false);
-        this.chunk = null;
-    }
+	public ChunkKey getKey() {
+		return key;
+	}
+
+	public Chunk getChunk() {
+		return chunk;
+	}
+
+	public void setPatchTimeUptodate() {
+		if (chunk != null) this.lastPatchedTime = chunk.getWorld().getTotalWorldTime();
+	}
+
+	public void setPatchTimeTo(long lastPatchedTime) {
+		this.lastPatchedTime = lastPatchedTime;
+	}
+
+	public long getLastPatchedTime() {
+		return lastPatchedTime;
+	}
+
+	public void clearLoadedChunk() {
+		setToBePatched(false);
+		this.chunk = null;
+	}
 
 }

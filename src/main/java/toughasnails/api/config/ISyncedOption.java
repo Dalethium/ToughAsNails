@@ -7,7 +7,7 @@
  ******************************************************************************/
 package toughasnails.api.config;
 
-public interface ISyncedOption
-{
-    String getOptionName();
+public interface ISyncedOption {
+
+	String getOptionName();
 }

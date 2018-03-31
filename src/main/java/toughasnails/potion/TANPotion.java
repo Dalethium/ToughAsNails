@@ -25,21 +25,19 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TANPotion extends Potion
-{
-    private static final ResourceLocation POTIONS_LOCATION = new ResourceLocation("toughasnails:textures/potions/tanpotionfx.png");
-    
-    protected TANPotion(boolean isBadEffectIn, int liquidColorIn, int x, int y)
-    {
-        super(isBadEffectIn, liquidColorIn);
-        this.setIconIndex(x, y);
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasStatusIcon()
-    {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(POTIONS_LOCATION);
-        return super.hasStatusIcon();
-    }
+public abstract class TANPotion extends Potion {
+
+	private static final ResourceLocation POTIONS_LOCATION = new ResourceLocation("toughasnails:textures/potions/tanpotionfx.png");
+
+	protected TANPotion(boolean isBadEffectIn, int liquidColorIn, int x, int y) {
+		super(isBadEffectIn, liquidColorIn);
+		this.setIconIndex(x, y);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasStatusIcon() {
+		Minecraft.getMinecraft().getTextureManager().bindTexture(POTIONS_LOCATION);
+		return super.hasStatusIcon();
+	}
 }

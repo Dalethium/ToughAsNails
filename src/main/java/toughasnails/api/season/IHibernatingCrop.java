@@ -19,6 +19,7 @@ package toughasnails.api.season;
  * alternatively net.minecraftforge.common.ForgeHooks.onCropsGrowPre)
  */
 public interface IHibernatingCrop {
-    // Crop will only hibernate in winter if this returns true
-    boolean shouldHibernate();
+
+	// Crop will only hibernate in winter if this returns true
+	boolean shouldHibernate();
 }

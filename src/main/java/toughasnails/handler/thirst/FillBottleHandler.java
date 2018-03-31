@@ -25,99 +25,86 @@ import toughasnails.api.config.GameplayOption;
 import toughasnails.api.config.SyncedConfig;
 import toughasnails.api.item.TANItems;
 
-public class FillBottleHandler 
-{
-    /**
-     * Substitutes normal filled water bottles for dirty water bottles
-     */
-    @SubscribeEvent
-    public void onPlayerRightClickWater(PlayerInteractEvent.RightClickItem event) throws Exception
-    {
-        EntityPlayer player = event.getEntityPlayer();
-        ItemStack stack = player.getHeldItem(event.getHand());
-        World world = player.world;
+public class FillBottleHandler {
 
-        if (stack.getItem().equals(Items.GLASS_BOTTLE) && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_THIRST))
-        {
-            int originalCount = stack.getCount();
-            // Trick onItemRightClick into not adding any water bottles into the player's inventory
-            stack.setCount(1);
+	/**
+	 * Substitutes normal filled water bottles for dirty water bottles
+	 */
+	@SubscribeEvent
+	public void onPlayerRightClickWater(PlayerInteractEvent.RightClickItem event) throws Exception {
+		EntityPlayer player = event.getEntityPlayer();
+		ItemStack stack = player.getHeldItem(event.getHand());
+		World world = player.world;
 
-            ActionResult actionResult = stack.getItem().onItemRightClick(event.getWorld(), player, event.getHand());
-            ItemStack resultStack = ((ItemStack)actionResult.getResult());
+		if (stack.getItem().equals(Items.GLASS_BOTTLE) && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_THIRST)) {
+			int originalCount = stack.getCount();
+			// Trick onItemRightClick into not adding any water bottles into the player's inventory
+			stack.setCount(1);
 
-            // Only substitute water bottles with dirty water bottles
-            if (actionResult.getType() == EnumActionResult.SUCCESS && ItemStack.areItemStackTagsEqual(resultStack, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.WATER)))
-            {
-                // We must restore the original amount of bottles before continuing to prevent the fake empty bottle
-                // stack from being replaced
+			ActionResult actionResult = stack.getItem().onItemRightClick(event.getWorld(), player, event.getHand());
+			ItemStack resultStack = ((ItemStack) actionResult.getResult());
 
-                // A bottle has been consumed, so reduce the original count by one before it is restored
-                originalCount--;
-                stack.setCount(originalCount); // Restore original amount of bottles
+			// Only substitute water bottles with dirty water bottles
+			if (actionResult.getType() == EnumActionResult.SUCCESS && ItemStack.areItemStackTagsEqual(resultStack,
+					PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.WATER))) {
+				// We must restore the original amount of bottles before continuing to prevent the fake empty bottle
+				// stack from being replaced
 
-                player.addStat(StatList.getObjectUseStats(stack.getItem()));
-                ItemStack bottleStack = new ItemStack(TANItems.water_bottle);
+				// A bottle has been consumed, so reduce the original count by one before it is restored
+				originalCount--;
+				stack.setCount(originalCount); // Restore original amount of bottles
 
-                if (!player.inventory.addItemStackToInventory(bottleStack))
-                {
-                    player.dropItem(bottleStack, false);
-                }
+				player.addStat(StatList.getObjectUseStats(stack.getItem()));
+				ItemStack bottleStack = new ItemStack(TANItems.water_bottle);
 
-                // Prevent onItemRightClick from being fired a second time for bottles right clicked on water
-                event.setCanceled(true);
+				if (!player.inventory.addItemStackToInventory(bottleStack)) {
+					player.dropItem(bottleStack, false);
+				}
 
-            }
-            else
-            {
-                // Restore original amount of bottles
-                stack.setCount(originalCount);
-            }
-        }
-    }
+				// Prevent onItemRightClick from being fired a second time for bottles right clicked on water
+				event.setCanceled(true);
 
-    /**
-     * Produce dirty water bottles when filling empty bottles from the cauldron
-     */
-    @SubscribeEvent
-    public void onRightClickCauldron(PlayerInteractEvent.RightClickBlock event)
-    {
-        World world = event.getWorld();
-        EntityPlayer player = event.getEntityPlayer();
-        IBlockState state = world.getBlockState(event.getPos());
-        
-        if (state.getBlock() instanceof BlockCauldron && player.getHeldItem(event.getHand()).getItem() == Items.GLASS_BOTTLE && SyncedConfig.getBooleanValue(GameplayOption.ENABLE_THIRST))
-        {
-            BlockCauldron cauldron = (BlockCauldron)state.getBlock();
-            int level = ((Integer)state.getValue(BlockCauldron.LEVEL));
+			} else {
+				// Restore original amount of bottles
+				stack.setCount(originalCount);
+			}
+		}
+	}
 
-            // Only fill when the cauldron has water in it
-            if (level > 0 && !world.isRemote)
-            {
-                if (!player.capabilities.isCreativeMode)
-                {
-                    ItemStack waterBottle = new ItemStack(TANItems.water_bottle);
-                    player.addStat(StatList.CAULDRON_USED);
-                    player.getHeldItem(event.getHand()).setCount(player.getHeldItem(event.getHand()).getCount() - 1);
+	/**
+	 * Produce dirty water bottles when filling empty bottles from the cauldron
+	 */
+	@SubscribeEvent
+	public void onRightClickCauldron(PlayerInteractEvent.RightClickBlock event) {
+		World world = event.getWorld();
+		EntityPlayer player = event.getEntityPlayer();
+		IBlockState state = world.getBlockState(event.getPos());
 
-                    if (player.getHeldItem(event.getHand()).isEmpty())
-                    {
-                        player.setHeldItem(event.getHand(), waterBottle);
-                    }
-                    else if (!player.inventory.addItemStackToInventory(waterBottle))
-                    {
-                        player.dropItem(waterBottle, false);
-                    }
-                    else if (player instanceof EntityPlayerMP)
-                    {
-                        ((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);
-                    }
-                }
+		if (state.getBlock() instanceof BlockCauldron && player.getHeldItem(event.getHand()).getItem() == Items.GLASS_BOTTLE
+				&& SyncedConfig.getBooleanValue(GameplayOption.ENABLE_THIRST)) {
+			BlockCauldron cauldron = (BlockCauldron) state.getBlock();
+			int level = ((Integer) state.getValue(BlockCauldron.LEVEL));
 
-                cauldron.setWaterLevel(world, event.getPos(), state, level - 1);
-                // Prevent from producing a Vanilla water bottle
-                event.setCanceled(true);
-            }
-        }
-    }
+			// Only fill when the cauldron has water in it
+			if (level > 0 && !world.isRemote) {
+				if (!player.capabilities.isCreativeMode) {
+					ItemStack waterBottle = new ItemStack(TANItems.water_bottle);
+					player.addStat(StatList.CAULDRON_USED);
+					player.getHeldItem(event.getHand()).setCount(player.getHeldItem(event.getHand()).getCount() - 1);
+
+					if (player.getHeldItem(event.getHand()).isEmpty()) {
+						player.setHeldItem(event.getHand(), waterBottle);
+					} else if (!player.inventory.addItemStackToInventory(waterBottle)) {
+						player.dropItem(waterBottle, false);
+					} else if (player instanceof EntityPlayerMP) {
+						((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
+					}
+				}
+
+				cauldron.setWaterLevel(world, event.getPos(), state, level - 1);
+				// Prevent from producing a Vanilla water bottle
+				event.setCanceled(true);
+			}
+		}
+	}
 }

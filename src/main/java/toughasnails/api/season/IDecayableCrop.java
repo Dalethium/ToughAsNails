@@ -15,6 +15,7 @@ package toughasnails.api.season;
  * implement this interface if your class overrides updateTick.
  */
 public interface IDecayableCrop {
-    // Crop will only decay in winter if this returns true
-    boolean shouldDecay();
+
+	// Crop will only decay in winter if this returns true
+	boolean shouldDecay();
 }

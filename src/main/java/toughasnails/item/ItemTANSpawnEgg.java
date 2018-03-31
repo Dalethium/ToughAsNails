@@ -39,188 +39,153 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import toughasnails.api.item.IColoredItem;
 import toughasnails.init.ModEntities;
 
-public class ItemTANSpawnEgg extends Item implements IColoredItem
-{
-    
-    public ItemTANSpawnEgg()
-    {
-        this.setHasSubtypes(true);
-        this.setMaxDamage(0);
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
-    {
-        for (Entry<Integer, EntityList.EntityEggInfo> entry : ModEntities.entityEggs.entrySet())
-        {
-            subItems.add(new ItemStack(itemIn, 1, entry.getKey()));
-        }
-    }
-    
-            
-    public static Entity spawnTANCreature(World worldIn, int entityID, double x, double y, double z)
-    {
-        Entity entity = ModEntities.createEntityByID(entityID, worldIn);
-        
-        if (entity instanceof EntityLivingBase)
-        {
-            EntityLiving entityliving = (EntityLiving)entity;
-            entity.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(worldIn.rand.nextFloat() * 360.0F), 0.0F);
-            entityliving.rotationYawHead = entityliving.rotationYaw;
-            entityliving.renderYawOffset = entityliving.rotationYaw;
-            entityliving.onInitialSpawn(worldIn.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
-            worldIn.spawnEntity(entity);
-            entityliving.playLivingSound();
-        }
+public class ItemTANSpawnEgg extends Item implements IColoredItem {
 
-        return entity;
-    }
-    
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        int bopEntityId = stack.getMetadata();
-        String entityName = ModEntities.idToTANEntityName.get(bopEntityId);
-        return super.getUnlocalizedName(stack)+"_"+entityName;
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IItemColor getItemColor()
-    {
-        return new IItemColor()
-        {
-            @Override
-            public int getColorFromItemstack(ItemStack stack, int tintIndex) 
-            {
-                EntityList.EntityEggInfo entityegginfo = ModEntities.entityEggs.get(Integer.valueOf(stack.getMetadata()));
-                return entityegginfo != null ? (tintIndex == 0 ? entityegginfo.primaryColor : entityegginfo.secondaryColor) : 16777215;
-            }
-        };
-    }
+	public ItemTANSpawnEgg() {
+		this.setHasSubtypes(true);
+		this.setMaxDamage(0);
+	}
 
-    @Override
-    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
-    {
-        ItemStack stack = playerIn.getHeldItem(hand);
-        if (worldIn.isRemote)
-        {
-            return EnumActionResult.SUCCESS;
-        }
-        else if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack))
-        {
-            return EnumActionResult.FAIL;
-        }
-        else
-        {
-            IBlockState iblockstate = worldIn.getBlockState(pos);
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+		for (Entry<Integer, EntityList.EntityEggInfo> entry : ModEntities.entityEggs.entrySet()) {
+			subItems.add(new ItemStack(itemIn, 1, entry.getKey()));
+		}
+	}
 
-            if (iblockstate.getBlock() == Blocks.MOB_SPAWNER)
-            {
-                TileEntity tileentity = worldIn.getTileEntity(pos);
+	public static Entity spawnTANCreature(World worldIn, int entityID, double x, double y, double z) {
+		Entity entity = ModEntities.createEntityByID(entityID, worldIn);
 
-                if (tileentity instanceof TileEntityMobSpawner)
-                {
-                    MobSpawnerBaseLogic mobspawnerbaselogic = ((TileEntityMobSpawner)tileentity).getSpawnerBaseLogic();
-                    mobspawnerbaselogic.setEntityId(ItemMonsterPlacer.getNamedIdFrom(stack));
-                    tileentity.markDirty();
-                    worldIn.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+		if (entity instanceof EntityLivingBase) {
+			EntityLiving entityliving = (EntityLiving) entity;
+			entity.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(worldIn.rand.nextFloat() * 360.0F), 0.0F);
+			entityliving.rotationYawHead = entityliving.rotationYaw;
+			entityliving.renderYawOffset = entityliving.rotationYaw;
+			entityliving.onInitialSpawn(worldIn.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData) null);
+			worldIn.spawnEntity(entity);
+			entityliving.playLivingSound();
+		}
 
-                    if (!playerIn.capabilities.isCreativeMode)
-                    {
-                        stack.setCount(stack.getCount() - 1);
-                    }
+		return entity;
+	}
 
-                    return EnumActionResult.SUCCESS;
-                }
-            }
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		int bopEntityId = stack.getMetadata();
+		String entityName = ModEntities.idToTANEntityName.get(bopEntityId);
+		return super.getUnlocalizedName(stack) + "_" + entityName;
+	}
 
-            pos = pos.offset(facing);
-            double d0 = 0.0D;
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IItemColor getItemColor() {
+		return new IItemColor() {
 
-            if (facing == EnumFacing.UP && iblockstate instanceof BlockFence)
-            {
-                d0 = 0.5D;
-            }
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+				EntityList.EntityEggInfo entityegginfo = ModEntities.entityEggs.get(Integer.valueOf(stack.getMetadata()));
+				return entityegginfo != null ? (tintIndex == 0 ? entityegginfo.primaryColor : entityegginfo.secondaryColor) : 16777215;
+			}
+		};
+	}
 
-            Entity entity = spawnTANCreature(worldIn, stack.getMetadata(), (double)pos.getX() + 0.5D, (double)pos.getY() + d0, (double)pos.getZ() + 0.5D);
+	@Override
+	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
+			float hitY, float hitZ) {
+		ItemStack stack = playerIn.getHeldItem(hand);
+		if (worldIn.isRemote) {
+			return EnumActionResult.SUCCESS;
+		} else if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
+			return EnumActionResult.FAIL;
+		} else {
+			IBlockState iblockstate = worldIn.getBlockState(pos);
 
-            if (entity != null)
-            {
-                if (entity instanceof EntityLivingBase && stack.hasDisplayName())
-                {
-                    entity.setCustomNameTag(stack.getDisplayName());
-                }
+			if (iblockstate.getBlock() == Blocks.MOB_SPAWNER) {
+				TileEntity tileentity = worldIn.getTileEntity(pos);
 
-                if (!playerIn.capabilities.isCreativeMode)
-                {
-                    stack.setCount(stack.getCount() - 1);
-                }
-            }
+				if (tileentity instanceof TileEntityMobSpawner) {
+					MobSpawnerBaseLogic mobspawnerbaselogic = ((TileEntityMobSpawner) tileentity).getSpawnerBaseLogic();
+					mobspawnerbaselogic.setEntityId(ItemMonsterPlacer.getNamedIdFrom(stack));
+					tileentity.markDirty();
+					worldIn.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
 
-            return EnumActionResult.SUCCESS;
-        }
-    }
+					if (!playerIn.capabilities.isCreativeMode) {
+						stack.setCount(stack.getCount() - 1);
+					}
 
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
-    {
-        ItemStack stack = player.getHeldItem(hand);
+					return EnumActionResult.SUCCESS;
+				}
+			}
 
-        if (world.isRemote)
-        {
-            return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-        }
-        else
-        {
-            RayTraceResult movingobjectposition = this.rayTrace(world, player, true);
+			pos = pos.offset(facing);
+			double d0 = 0.0D;
 
-            if (movingobjectposition == null)
-            {
-                return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-            }
-            else
-            {
-                if (movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK)
-                {
-                    BlockPos blockpos = movingobjectposition.getBlockPos();
+			if (facing == EnumFacing.UP && iblockstate instanceof BlockFence) {
+				d0 = 0.5D;
+			}
 
-                    if (!world.isBlockModifiable(player, blockpos))
-                    {
-                        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-                    }
+			Entity entity = spawnTANCreature(worldIn, stack.getMetadata(), (double) pos.getX() + 0.5D, (double) pos.getY() + d0,
+					(double) pos.getZ() + 0.5D);
 
-                    if (!player.canPlayerEdit(blockpos, movingobjectposition.sideHit, stack))
-                    {
-                        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-                    }
+			if (entity != null) {
+				if (entity instanceof EntityLivingBase && stack.hasDisplayName()) {
+					entity.setCustomNameTag(stack.getDisplayName());
+				}
 
-                    if (world.getBlockState(blockpos).getBlock() instanceof BlockLiquid)
-                    {
-                        Entity entity = spawnTANCreature(world, stack.getMetadata(), (double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.5D, (double)blockpos.getZ() + 0.5D);
+				if (!playerIn.capabilities.isCreativeMode) {
+					stack.setCount(stack.getCount() - 1);
+				}
+			}
 
-                        if (entity != null)
-                        {
-                            if (entity instanceof EntityLivingBase && stack.hasDisplayName())
-                            {
-                                ((EntityLiving)entity).setCustomNameTag(stack.getDisplayName());
-                            }
+			return EnumActionResult.SUCCESS;
+		}
+	}
 
-                            if (!player.capabilities.isCreativeMode)
-                            {
-                                stack.setCount(stack.getCount() - 1);
-                            }
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 
-                            //TODO: 1.9 playerIn.triggerAchievement(StatList.objectUseStats[Item.getIdFromItem(this)]);
-                        }
-                    }
-                }
+		if (world.isRemote) {
+			return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+		} else {
+			RayTraceResult movingobjectposition = this.rayTrace(world, player, true);
 
-                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
-            }
-        }
-    }
-    
-    
+			if (movingobjectposition == null) {
+				return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+			} else {
+				if (movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK) {
+					BlockPos blockpos = movingobjectposition.getBlockPos();
+
+					if (!world.isBlockModifiable(player, blockpos)) {
+						return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+					}
+
+					if (!player.canPlayerEdit(blockpos, movingobjectposition.sideHit, stack)) {
+						return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+					}
+
+					if (world.getBlockState(blockpos).getBlock() instanceof BlockLiquid) {
+						Entity entity = spawnTANCreature(world, stack.getMetadata(), (double) blockpos.getX() + 0.5D,
+								(double) blockpos.getY() + 0.5D, (double) blockpos.getZ() + 0.5D);
+
+						if (entity != null) {
+							if (entity instanceof EntityLivingBase && stack.hasDisplayName()) {
+								((EntityLiving) entity).setCustomNameTag(stack.getDisplayName());
+							}
+
+							if (!player.capabilities.isCreativeMode) {
+								stack.setCount(stack.getCount() - 1);
+							}
+
+							// TODO: 1.9 playerIn.triggerAchievement(StatList.objectUseStats[Item.getIdFromItem(this)]);
+						}
+					}
+				}
+
+				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+			}
+		}
+	}
+
 }

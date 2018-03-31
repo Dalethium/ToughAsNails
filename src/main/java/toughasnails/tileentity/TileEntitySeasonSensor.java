@@ -12,14 +12,12 @@ import net.minecraft.util.ITickable;
 import toughasnails.api.season.SeasonHelper;
 import toughasnails.block.BlockSeasonSensor;
 
-public class TileEntitySeasonSensor extends TileEntity implements ITickable 
-{
-    @Override
-    public void update()
-    {
-        if (this.world != null && !this.world.isRemote && SeasonHelper.getSeasonData(this.world).getSeasonCycleTicks() % 20L == 0L)
-        {
-            ((BlockSeasonSensor)this.getBlockType()).updatePower(this.world, this.pos);
-        }
-    }
+public class TileEntitySeasonSensor extends TileEntity implements ITickable {
+
+	@Override
+	public void update() {
+		if (this.world != null && !this.world.isRemote && SeasonHelper.getSeasonData(this.world).getSeasonCycleTicks() % 20L == 0L) {
+			((BlockSeasonSensor) this.getBlockType()).updatePower(this.world, this.pos);
+		}
+	}
 }

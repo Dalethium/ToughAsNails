@@ -9,35 +9,33 @@ import toughasnails.temperature.TemperatureDebugger;
 import toughasnails.temperature.TemperatureDebugger.Modifier;
 import toughasnails.util.BiomeUtils;
 
-public class TimeModifier extends TemperatureModifier
-{
-    public TimeModifier(TemperatureDebugger debugger)
-    {
-        super(debugger);
-    }
+public class TimeModifier extends TemperatureModifier {
 
-    @Override
-    public Temperature modifyTarget(World world, EntityPlayer player, Temperature temperature)
-    {
-        Biome biome = world.getBiome(player.getPosition());
-        long worldTime = world.getWorldTime();
-        
-        float extremityModifier = BiomeUtils.getBiomeTempExtremity(biome);
-        //Reaches the highest point during the middle of the day and at midnight. Normalized to be between -1 and 1
-        float timeNorm = (-Math.abs(((worldTime + 6000) % 24000.0F) - 12000.0F) + 6000.0F) / 6000.0F;
-        
-        int temperatureLevel = temperature.getRawValue();
-        int newTemperatureLevel = temperatureLevel;
+	public TimeModifier(TemperatureDebugger debugger) {
+		super(debugger);
+	}
 
-        debugger.start(Modifier.TIME_TARGET, newTemperatureLevel);
-        
-        if (world.provider.isSurfaceWorld())
-        {
-        	newTemperatureLevel += ModConfig.temperature.timeModifier * timeNorm * (Math.max(1.0F, extremityModifier * ModConfig.temperature.timeExtremityMultiplier));
-        }
-        
-        debugger.end(newTemperatureLevel);
-        
-        return new Temperature(newTemperatureLevel);
-    }
+	@Override
+	public Temperature modifyTarget(World world, EntityPlayer player, Temperature temperature) {
+		Biome biome = world.getBiome(player.getPosition());
+		long worldTime = world.getWorldTime();
+
+		float extremityModifier = BiomeUtils.getBiomeTempExtremity(biome);
+		// Reaches the highest point during the middle of the day and at midnight. Normalized to be between -1 and 1
+		float timeNorm = (-Math.abs(((worldTime + 6000) % 24000.0F) - 12000.0F) + 6000.0F) / 6000.0F;
+
+		int temperatureLevel = temperature.getRawValue();
+		int newTemperatureLevel = temperatureLevel;
+
+		debugger.start(Modifier.TIME_TARGET, newTemperatureLevel);
+
+		if (world.provider.isSurfaceWorld()) {
+			newTemperatureLevel += ModConfig.temperature.timeModifier * timeNorm
+					* (Math.max(1.0F, extremityModifier * ModConfig.temperature.timeExtremityMultiplier));
+		}
+
+		debugger.end(newTemperatureLevel);
+
+		return new Temperature(newTemperatureLevel);
+	}
 }

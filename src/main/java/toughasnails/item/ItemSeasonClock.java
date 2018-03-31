@@ -20,71 +20,63 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import toughasnails.api.season.SeasonHelper;
 import toughasnails.season.SeasonTime;
 
-public class ItemSeasonClock extends Item
-{
-    public ItemSeasonClock()
-    {
-        this.addPropertyOverride(new ResourceLocation("time"), new IItemPropertyGetter()
-        {
-            @SideOnly(Side.CLIENT)
-            double field_185088_a;
-            @SideOnly(Side.CLIENT)
-            double field_185089_b;
-            @SideOnly(Side.CLIENT)
-            int ticks;
-            @Override
-            @SideOnly(Side.CLIENT)
-            public float apply(ItemStack stack, World world, EntityLivingBase entity)
-            {
-                Entity holder = (Entity)(entity != null ? entity : stack.getItemFrame());
+public class ItemSeasonClock extends Item {
 
-                if (world == null && holder != null)
-                {
-                    world = holder.world;
-                }
+	public ItemSeasonClock() {
+		this.addPropertyOverride(new ResourceLocation("time"), new IItemPropertyGetter() {
 
-                if (world == null)
-                {
-                    return 0.0F;
-                }
-                else
-                {
-                    double d0;
-                    
-                    if (world.provider.isSurfaceWorld())
-                    {
-                        int seasonCycleTicks = SeasonHelper.getSeasonData(world).getSeasonCycleTicks();
-                        d0 = (double)((float)seasonCycleTicks / (float)SeasonTime.ZERO.getCycleDuration());
-                    }
-                    else
-                    {
-                        d0 = Math.random();
-                    }
-                    
-                    d0 = this.actualFrame(world, d0);
-                    return MathHelper.positiveModulo((float)d0, 1.0F);
-                }
-            }
-            @SideOnly(Side.CLIENT)
-            private double actualFrame(World world, double frame)
-            {
-                if (world.getTotalWorldTime() != this.ticks)
-                {
-                    this.ticks = (int)world.getTotalWorldTime();
-                    double newFrame = frame - this.field_185088_a;
+			@SideOnly(Side.CLIENT)
+			double field_185088_a;
 
-                    if (newFrame < -0.5D)
-                    {
-                        ++newFrame;
-                    }
+			@SideOnly(Side.CLIENT)
+			double field_185089_b;
 
-                    this.field_185089_b += newFrame * 0.1D;
-                    this.field_185089_b *= 0.9D;
-                    this.field_185088_a += this.field_185089_b;
-                }
+			@SideOnly(Side.CLIENT)
+			int ticks;
 
-                return this.field_185088_a;
-            }
-        });
-    }
+			@Override
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, World world, EntityLivingBase entity) {
+				Entity holder = (Entity) (entity != null ? entity : stack.getItemFrame());
+
+				if (world == null && holder != null) {
+					world = holder.world;
+				}
+
+				if (world == null) {
+					return 0.0F;
+				} else {
+					double d0;
+
+					if (world.provider.isSurfaceWorld()) {
+						int seasonCycleTicks = SeasonHelper.getSeasonData(world).getSeasonCycleTicks();
+						d0 = (double) ((float) seasonCycleTicks / (float) SeasonTime.ZERO.getCycleDuration());
+					} else {
+						d0 = Math.random();
+					}
+
+					d0 = this.actualFrame(world, d0);
+					return MathHelper.positiveModulo((float) d0, 1.0F);
+				}
+			}
+
+			@SideOnly(Side.CLIENT)
+			private double actualFrame(World world, double frame) {
+				if (world.getTotalWorldTime() != this.ticks) {
+					this.ticks = (int) world.getTotalWorldTime();
+					double newFrame = frame - this.field_185088_a;
+
+					if (newFrame < -0.5D) {
+						++newFrame;
+					}
+
+					this.field_185089_b += newFrame * 0.1D;
+					this.field_185089_b *= 0.9D;
+					this.field_185088_a += this.field_185089_b;
+				}
+
+				return this.field_185088_a;
+			}
+		});
+	}
 }

@@ -22,21 +22,18 @@ import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.config.SeasonsOption;
 import toughasnails.init.ModConfig;
 
-public class SeasonCropHandler
-{
-    @SubscribeEvent
-    public void onCropGrowPre(BlockEvent.CropGrowEvent.Pre event)
-    {
-        Block block = event.getState().getBlock();
-        BlockPos pos = event.getPos();
-        World world = event.getWorld();
-        Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
-        if (season == Season.WINTER &&
-                (block instanceof IHibernatingCrop && ((IHibernatingCrop)block).shouldHibernate()) &&
-                !TemperatureHelper.isPosClimatisedForTemp(world, pos, new Temperature(1)) &&
-                SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS) && ModConfig.seasons.winterCropDeath
-                ) {
-            event.setResult(Event.Result.DENY);
-        }
-    }
+public class SeasonCropHandler {
+
+	@SubscribeEvent
+	public void onCropGrowPre(BlockEvent.CropGrowEvent.Pre event) {
+		Block block = event.getState().getBlock();
+		BlockPos pos = event.getPos();
+		World world = event.getWorld();
+		Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
+		if (season == Season.WINTER && (block instanceof IHibernatingCrop && ((IHibernatingCrop) block).shouldHibernate())
+				&& !TemperatureHelper.isPosClimatisedForTemp(world, pos, new Temperature(1))
+				&& SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS) && ModConfig.seasons.winterCropDeath) {
+			event.setResult(Event.Result.DENY);
+		}
+	}
 }

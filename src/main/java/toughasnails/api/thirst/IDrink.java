@@ -7,9 +7,11 @@
  ******************************************************************************/
 package toughasnails.api.thirst;
 
-public interface IDrink 
-{
-    public int getThirst();
-    public float getHydration();
-    public float getPoisonChance();
+public interface IDrink {
+
+	public int getThirst();
+
+	public float getHydration();
+
+	public float getPoisonChance();
 }

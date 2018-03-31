@@ -12,48 +12,50 @@ import toughasnails.core.ToughAsNails;
 
 import java.io.File;
 
-public class SeasonsConfig extends ConfigHandler
-{
-    public static final String TIME_SETTINGS = "Time Settings";
-    public static final String EVENT_SETTINGS = "Event Settings";
-    public static final String AESTHETIC_SETTINGS = "Aesthetic Settings";
-    public static final String PERFORMANCE_SETTINGS = "Performance Settings";
+public class SeasonsConfig extends ConfigHandler {
 
-    public boolean winterCropDeath;
-    public boolean changeGrassColour;
-    public boolean changeFoliageColour;
+	public static final String TIME_SETTINGS = "Time Settings";
 
-    public SeasonsConfig(File configFile)
-    {
-        super(configFile);
-    }
+	public static final String EVENT_SETTINGS = "Event Settings";
 
-    @Override
-    protected void loadConfiguration()
-    {
-        try
-        {
-            addSyncedValue(SeasonsOption.ENABLE_SEASONS, true, "Toggle", "Seasons progress as days increase");
-            addSyncedValue(SeasonsOption.DAY_DURATION, 24000, TIME_SETTINGS, "The duration of a Minecraft day in ticks", 20, Integer.MAX_VALUE);
-            addSyncedValue(SeasonsOption.SUB_SEASON_DURATION, 5, TIME_SETTINGS, "The duration of a sub season in days", 1, Integer.MAX_VALUE);
-            addSyncedValue(SeasonsOption.NUM_PATCHES_PER_TICK, 20, PERFORMANCE_SETTINGS, "The amount of chunk patches per server tick. Lower number increases server performance, but increases popping artifacts.", 1, Integer.MAX_VALUE);
-            addSyncedValue(SeasonsOption.PATCH_TICK_DISTANCE, 20 * 5, PERFORMANCE_SETTINGS, "The amount of ticks to keep between patching a chunk.", 0, Integer.MAX_VALUE);
+	public static final String AESTHETIC_SETTINGS = "Aesthetic Settings";
 
-            // Only applicable server-side
-            winterCropDeath = config.getBoolean("Enable Winter Crop Death", EVENT_SETTINGS, true, "Kill unheated crops during the winter");
+	public static final String PERFORMANCE_SETTINGS = "Performance Settings";
 
-            // Client-only. The server shouldn't get to decide these.
-            changeGrassColour = config.getBoolean("Change Grass Colour Seasonally", AESTHETIC_SETTINGS, true, "Change the grass colour based on the current season");
-            changeFoliageColour = config.getBoolean("Change Foliage Colour Seasonally", AESTHETIC_SETTINGS, true, "Change the foliage colour based on the current season");
-        }
-        catch (Exception e)
-        {
-            ToughAsNails.logger.error("Tough As Nails has encountered a problem loading seasons.cfg", e);
-        }
-        finally
-        {
-            if (config.hasChanged())
-                config.save();
-        }
-    }
+	public boolean winterCropDeath;
+
+	public boolean changeGrassColour;
+
+	public boolean changeFoliageColour;
+
+	public SeasonsConfig(File configFile) {
+		super(configFile);
+	}
+
+	@Override
+	protected void loadConfiguration() {
+		try {
+			addSyncedValue(SeasonsOption.ENABLE_SEASONS, true, "Toggle", "Seasons progress as days increase");
+			addSyncedValue(SeasonsOption.DAY_DURATION, 24000, TIME_SETTINGS, "The duration of a Minecraft day in ticks", 20, Integer.MAX_VALUE);
+			addSyncedValue(SeasonsOption.SUB_SEASON_DURATION, 5, TIME_SETTINGS, "The duration of a sub season in days", 1, Integer.MAX_VALUE);
+			addSyncedValue(SeasonsOption.NUM_PATCHES_PER_TICK, 20, PERFORMANCE_SETTINGS,
+					"The amount of chunk patches per server tick. Lower number increases server performance, but increases popping artifacts.",
+					1, Integer.MAX_VALUE);
+			addSyncedValue(SeasonsOption.PATCH_TICK_DISTANCE, 20 * 5, PERFORMANCE_SETTINGS,
+					"The amount of ticks to keep between patching a chunk.", 0, Integer.MAX_VALUE);
+
+			// Only applicable server-side
+			winterCropDeath = config.getBoolean("Enable Winter Crop Death", EVENT_SETTINGS, true, "Kill unheated crops during the winter");
+
+			// Client-only. The server shouldn't get to decide these.
+			changeGrassColour = config.getBoolean("Change Grass Colour Seasonally", AESTHETIC_SETTINGS, true,
+					"Change the grass colour based on the current season");
+			changeFoliageColour = config.getBoolean("Change Foliage Colour Seasonally", AESTHETIC_SETTINGS, true,
+					"Change the foliage colour based on the current season");
+		} catch (Exception e) {
+			ToughAsNails.logger.error("Tough As Nails has encountered a problem loading seasons.cfg", e);
+		} finally {
+			if (config.hasChanged()) config.save();
+		}
+	}
 }

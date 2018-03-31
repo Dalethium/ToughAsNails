@@ -20,30 +20,26 @@ import toughasnails.api.season.Season;
 import toughasnails.api.season.SeasonHelper;
 import toughasnails.api.config.GameplayOption;
 
-public class StopSpawnHandler 
-{
-    //Animals shouldn't spawn during winter
-    @SubscribeEvent
-    public void onCheckEntitySpawn(LivingSpawnEvent.CheckSpawn event)
-    {
-        Season season = SeasonHelper.getSeasonData(event.getWorld()).getSubSeason().getSeason();
-        
-        if (season == Season.WINTER && event.getEntity() instanceof EntityAnimal && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS))
-        {
-            event.setResult(Result.DENY);
-        }
-    }
-    
-    @SubscribeEvent
-    public void onChunkPopulate(PopulateChunkEvent.Populate event)
-    {
-        World world = event.getWorld();
-        Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
-        
-        //Prevent animals from spawning in new chunks during the winter
-        if (event.getType() == EventType.ANIMALS && season == Season.WINTER && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS))
-        {
-            event.setResult(Result.DENY);
-        }
-    }
+public class StopSpawnHandler {
+
+	// Animals shouldn't spawn during winter
+	@SubscribeEvent
+	public void onCheckEntitySpawn(LivingSpawnEvent.CheckSpawn event) {
+		Season season = SeasonHelper.getSeasonData(event.getWorld()).getSubSeason().getSeason();
+
+		if (season == Season.WINTER && event.getEntity() instanceof EntityAnimal && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)) {
+			event.setResult(Result.DENY);
+		}
+	}
+
+	@SubscribeEvent
+	public void onChunkPopulate(PopulateChunkEvent.Populate event) {
+		World world = event.getWorld();
+		Season season = SeasonHelper.getSeasonData(world).getSubSeason().getSeason();
+
+		// Prevent animals from spawning in new chunks during the winter
+		if (event.getType() == EventType.ANIMALS && season == Season.WINTER && SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)) {
+			event.setResult(Result.DENY);
+		}
+	}
 }

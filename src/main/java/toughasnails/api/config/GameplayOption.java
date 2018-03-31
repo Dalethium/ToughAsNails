@@ -7,21 +7,17 @@
  ******************************************************************************/
 package toughasnails.api.config;
 
-public enum GameplayOption implements ISyncedOption
-{
-    ENABLE_LOWERED_STARTING_HEALTH("Enable Lowered Starting Health"),
-    ENABLE_THIRST("Enable Thirst");
+public enum GameplayOption implements ISyncedOption {
+	ENABLE_LOWERED_STARTING_HEALTH("Enable Lowered Starting Health"), ENABLE_THIRST("Enable Thirst");
 
-    private final String optionName;
-    
-    private GameplayOption(String name)
-    {
-        this.optionName = name;
-    }
-    
-    @Override
-    public String getOptionName()
-    {
-        return this.optionName;
-    }
+	private final String optionName;
+
+	private GameplayOption(String name) {
+		this.optionName = name;
+	}
+
+	@Override
+	public String getOptionName() {
+		return this.optionName;
+	}
 }

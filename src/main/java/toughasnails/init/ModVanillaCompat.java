@@ -1,15 +1,13 @@
 package toughasnails.init;
 
-public class ModVanillaCompat
-{
-    public static void init()
-    {
-    	addDungeonLoot();
-    }
-    
-	private static void addDungeonLoot()
-	{
-	    //Requires loot hooks which haven't yet been added
+public class ModVanillaCompat {
+
+	public static void init() {
+		addDungeonLoot();
+	}
+
+	private static void addDungeonLoot() {
+		// Requires loot hooks which haven't yet been added
 		/*TODO: 1.9 ChestGenHooks desertTemple = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST);
 		ChestGenHooks dungeon = ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST);
 		ChestGenHooks jungleTemple = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST);
@@ -19,7 +17,7 @@ public class ModVanillaCompat
 		ChestGenHooks strongholdLibrary = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY);
 		ChestGenHooks village = ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH);
 		ChestGenHooks bonusChest = ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST);
-
+		
 		bonusChest.addItem(new WeightedRandomChestContent(new ItemStack(TANItems.canteen), 1, 1, 15));
 		
 		mineshaft.addItem(new WeightedRandomChestContent(new ItemStack(TANItems.jelled_slime_boots), 1, 1, 5));

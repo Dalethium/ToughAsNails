@@ -19,85 +19,80 @@ import toughasnails.init.ModConfig;
 import toughasnails.temperature.TemperatureDebugger;
 import toughasnails.temperature.TemperatureDebugger.Modifier;
 
-public class SeasonModifier extends TemperatureModifier
-{
-    public SeasonModifier(TemperatureDebugger debugger) 
-    {
-        super(debugger);
-    }
+public class SeasonModifier extends TemperatureModifier {
 
-    @Override
-    public Temperature modifyTarget(World world, EntityPlayer player, Temperature temperature) 
-    {
-        int temperatureLevel = temperature.getRawValue();
-        SubSeason season = SeasonHelper.getSeasonData(world).getSubSeason();
-        
-        if (!(SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS)))
-        {
-        	season = SubSeason.MID_SUMMER;
-        }
-        
-        debugger.start(Modifier.SEASON_TARGET, temperatureLevel);
-        
-        if (world.provider.isSurfaceWorld())
-        {
-	        switch (season)
-	        {
-	        case EARLY_SPRING:
-	            temperatureLevel += ModConfig.temperature.earlySpringModifier;
-                break;
+	public SeasonModifier(TemperatureDebugger debugger) {
+		super(debugger);
+	}
 
-			case MID_SPRING:
-				temperatureLevel += ModConfig.temperature.midSpringModifier;
-				break;
-                
-	        case LATE_SPRING:
-	            temperatureLevel += ModConfig.temperature.lateSpringModifier;
-                break;
-                
-	        case EARLY_SUMMER:
-	            temperatureLevel += ModConfig.temperature.earlySummerModifier;
-	            break;
-	            
-	        case MID_SUMMER:
-	            temperatureLevel += ModConfig.temperature.midSummerModifier;
-	            break;
-	            
-	        case LATE_SUMMER:
-	            temperatureLevel += ModConfig.temperature.lateSummerModifier;
-	            break;
-	            
-	        case EARLY_AUTUMN:
-	            temperatureLevel += ModConfig.temperature.earlyAutumnModifier;
-	            break;
+	@Override
+	public Temperature modifyTarget(World world, EntityPlayer player, Temperature temperature) {
+		int temperatureLevel = temperature.getRawValue();
+		SubSeason season = SeasonHelper.getSeasonData(world).getSubSeason();
 
-			case MID_AUTUMN:
-				temperatureLevel += ModConfig.temperature.midAutumnModifier;
-				break;
-	            
-	        case LATE_AUTUMN:
-	            temperatureLevel += ModConfig.temperature.lateAutumnModifier;
-	            break;
-	            
-	        case EARLY_WINTER:
-	            temperatureLevel += ModConfig.temperature.earlyWinterModifier;
-	            break;
-	            
-	        case MID_WINTER:
-	            temperatureLevel += ModConfig.temperature.midWinterModifier;
-	            break;
-	            
-	        case LATE_WINTER:
-                temperatureLevel += ModConfig.temperature.lateWinterModifier;
-                break;
-	            
-	        default:
-	            break;
-	        }
-        }
-        debugger.end(temperatureLevel);
-        
-        return new Temperature(temperatureLevel);
-    }
+		if (!(SyncedConfig.getBooleanValue(SeasonsOption.ENABLE_SEASONS))) {
+			season = SubSeason.MID_SUMMER;
+		}
+
+		debugger.start(Modifier.SEASON_TARGET, temperatureLevel);
+
+		if (world.provider.isSurfaceWorld()) {
+			switch (season) {
+				case EARLY_SPRING:
+					temperatureLevel += ModConfig.temperature.earlySpringModifier;
+					break;
+
+				case MID_SPRING:
+					temperatureLevel += ModConfig.temperature.midSpringModifier;
+					break;
+
+				case LATE_SPRING:
+					temperatureLevel += ModConfig.temperature.lateSpringModifier;
+					break;
+
+				case EARLY_SUMMER:
+					temperatureLevel += ModConfig.temperature.earlySummerModifier;
+					break;
+
+				case MID_SUMMER:
+					temperatureLevel += ModConfig.temperature.midSummerModifier;
+					break;
+
+				case LATE_SUMMER:
+					temperatureLevel += ModConfig.temperature.lateSummerModifier;
+					break;
+
+				case EARLY_AUTUMN:
+					temperatureLevel += ModConfig.temperature.earlyAutumnModifier;
+					break;
+
+				case MID_AUTUMN:
+					temperatureLevel += ModConfig.temperature.midAutumnModifier;
+					break;
+
+				case LATE_AUTUMN:
+					temperatureLevel += ModConfig.temperature.lateAutumnModifier;
+					break;
+
+				case EARLY_WINTER:
+					temperatureLevel += ModConfig.temperature.earlyWinterModifier;
+					break;
+
+				case MID_WINTER:
+					temperatureLevel += ModConfig.temperature.midWinterModifier;
+					break;
+
+				case LATE_WINTER:
+					temperatureLevel += ModConfig.temperature.lateWinterModifier;
+					break;
+
+				default:
+					break;
+			}
+		}
+		debugger.end(temperatureLevel);
+
+		return new Temperature(temperatureLevel);
+	}
 
 }

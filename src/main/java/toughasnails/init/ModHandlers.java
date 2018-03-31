@@ -32,70 +32,65 @@ import toughasnails.handler.thirst.VanillaDrinkHandler;
 import toughasnails.season.SeasonTime;
 import toughasnails.util.SeasonColourUtil;
 
-public class ModHandlers
-{
-    private static final SeasonHandler SEASON_HANDLER = new SeasonHandler();
+public class ModHandlers {
 
-    public static void init()
-    {
-        PacketHandler.init();
+	private static final SeasonHandler SEASON_HANDLER = new SeasonHandler();
 
-        MinecraftForge.EVENT_BUS.register(new ExtendedStatHandler());
-        MinecraftForge.EVENT_BUS.register(new SyncedConfigHandler());
+	public static void init() {
+		PacketHandler.init();
 
-        MinecraftForge.EVENT_BUS.register(new ThirstStatHandler());
-        MinecraftForge.EVENT_BUS.register(new VanillaDrinkHandler());
-        MinecraftForge.EVENT_BUS.register(new FillBottleHandler());
-        MaxHealthHandler maxHealthHandler = new MaxHealthHandler();
-        MinecraftForge.EVENT_BUS.register(maxHealthHandler);
-        HealthHelper.heartProvider = maxHealthHandler;
+		MinecraftForge.EVENT_BUS.register(new ExtendedStatHandler());
+		MinecraftForge.EVENT_BUS.register(new SyncedConfigHandler());
 
-        // Handlers for functionality related to seasons
-        MinecraftForge.EVENT_BUS.register(SEASON_HANDLER);
-        SeasonHelper.dataProvider = SEASON_HANDLER;
-        MinecraftForge.EVENT_BUS.register(new RandomUpdateHandler());
-        MinecraftForge.TERRAIN_GEN_BUS.register(new ProviderIceHandler());
-        MinecraftForge.EVENT_BUS.register(new SeasonCropHandler());
-        MinecraftForge.EVENT_BUS.register(new SeasonSleepHandler());
-        StopSpawnHandler stopSpawnHandler = new StopSpawnHandler();
-        MinecraftForge.EVENT_BUS.register(stopSpawnHandler);
-        MinecraftForge.TERRAIN_GEN_BUS.register(stopSpawnHandler);
-        MinecraftForge.EVENT_BUS.register(new WeatherFrequencyHandler());
-        MinecraftForge.EVENT_BUS.register(new AchievementEventHandler());
-        MinecraftForge.EVENT_BUS.register(new SeasonChunkPatchingHandler());
+		MinecraftForge.EVENT_BUS.register(new ThirstStatHandler());
+		MinecraftForge.EVENT_BUS.register(new VanillaDrinkHandler());
+		MinecraftForge.EVENT_BUS.register(new FillBottleHandler());
+		MaxHealthHandler maxHealthHandler = new MaxHealthHandler();
+		MinecraftForge.EVENT_BUS.register(maxHealthHandler);
+		HealthHelper.heartProvider = maxHealthHandler;
 
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            MinecraftForge.EVENT_BUS.register(new TemperatureOverlayHandler());
-            MinecraftForge.EVENT_BUS.register(new TemperatureStatTableHandler());
-            MinecraftForge.EVENT_BUS.register(new ThirstOverlayHandler());
-            MinecraftForge.EVENT_BUS.register(new HealthOverlayHandler());
+		// Handlers for functionality related to seasons
+		MinecraftForge.EVENT_BUS.register(SEASON_HANDLER);
+		SeasonHelper.dataProvider = SEASON_HANDLER;
+		MinecraftForge.EVENT_BUS.register(new RandomUpdateHandler());
+		MinecraftForge.TERRAIN_GEN_BUS.register(new ProviderIceHandler());
+		MinecraftForge.EVENT_BUS.register(new SeasonCropHandler());
+		MinecraftForge.EVENT_BUS.register(new SeasonSleepHandler());
+		StopSpawnHandler stopSpawnHandler = new StopSpawnHandler();
+		MinecraftForge.EVENT_BUS.register(stopSpawnHandler);
+		MinecraftForge.TERRAIN_GEN_BUS.register(stopSpawnHandler);
+		MinecraftForge.EVENT_BUS.register(new WeatherFrequencyHandler());
+		MinecraftForge.EVENT_BUS.register(new AchievementEventHandler());
+		MinecraftForge.EVENT_BUS.register(new SeasonChunkPatchingHandler());
 
-            registerSeasonColourHandlers();
-        }
-    }
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+			MinecraftForge.EVENT_BUS.register(new TemperatureOverlayHandler());
+			MinecraftForge.EVENT_BUS.register(new TemperatureStatTableHandler());
+			MinecraftForge.EVENT_BUS.register(new ThirstOverlayHandler());
+			MinecraftForge.EVENT_BUS.register(new HealthOverlayHandler());
 
-    @SideOnly(Side.CLIENT)
-    private static void registerSeasonColourHandlers()
-    {
-        BiomeColorHelper.GRASS_COLOR = new BiomeColorHelper.ColorResolver()
-        {
-            @Override
-            public int getColorAtPos(Biome biome, BlockPos blockPosition)
-            {
-                SeasonTime calendar = new SeasonTime(SeasonHandler.clientSeasonCycleTicks);
-                return SeasonColourUtil.applySeasonalGrassColouring(calendar.getSubSeason(), biome.getGrassColorAtPos(blockPosition));
-            }
-        };
+			registerSeasonColourHandlers();
+		}
+	}
 
-        BiomeColorHelper.FOLIAGE_COLOR = new BiomeColorHelper.ColorResolver()
-        {
-            @Override
-            public int getColorAtPos(Biome biome, BlockPos blockPosition)
-            {
-                SeasonTime calendar = new SeasonTime(SeasonHandler.clientSeasonCycleTicks);
-                return SeasonColourUtil.applySeasonalFoliageColouring(calendar.getSubSeason(), biome.getFoliageColorAtPos(blockPosition));
-            }
-        };
-    }
+	@SideOnly(Side.CLIENT)
+	private static void registerSeasonColourHandlers() {
+		BiomeColorHelper.GRASS_COLOR = new BiomeColorHelper.ColorResolver() {
+
+			@Override
+			public int getColorAtPos(Biome biome, BlockPos blockPosition) {
+				SeasonTime calendar = new SeasonTime(SeasonHandler.clientSeasonCycleTicks);
+				return SeasonColourUtil.applySeasonalGrassColouring(calendar.getSubSeason(), biome.getGrassColorAtPos(blockPosition));
+			}
+		};
+
+		BiomeColorHelper.FOLIAGE_COLOR = new BiomeColorHelper.ColorResolver() {
+
+			@Override
+			public int getColorAtPos(Biome biome, BlockPos blockPosition) {
+				SeasonTime calendar = new SeasonTime(SeasonHandler.clientSeasonCycleTicks);
+				return SeasonColourUtil.applySeasonalFoliageColouring(calendar.getSubSeason(), biome.getFoliageColorAtPos(blockPosition));
+			}
+		};
+	}
 }

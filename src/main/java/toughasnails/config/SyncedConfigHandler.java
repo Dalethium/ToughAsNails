@@ -25,37 +25,32 @@ import toughasnails.core.ToughAsNails;
 import toughasnails.handler.PacketHandler;
 import toughasnails.network.message.MessageSyncConfigs;
 
-public class SyncedConfigHandler
-{
-    @SubscribeEvent
-    public void onPlayerLogin(PlayerLoggedInEvent event)
-    {
-        EntityPlayer player = event.player;
-        World world = player.world;
-        
-        if (!world.isRemote)
-        {
-            NBTTagCompound nbtOptions = new NBTTagCompound();
-            
-            for (Entry<String, SyncedConfig.SyncedConfigEntry> entry : SyncedConfig.optionsToSync.entrySet())
-            {
-                nbtOptions.setString(entry.getKey(), entry.getValue().value);
-            }
-            
-            IMessage message = new MessageSyncConfigs(nbtOptions);
-            PacketHandler.instance.sendTo(message, (EntityPlayerMP)player);        
-        }
-    }
-    
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload event)
-    {
-        if (event.getWorld().isRemote && !Minecraft.getMinecraft().getConnection().getNetworkManager().isChannelOpen())
-        {
-            SyncedConfig.restoreDefaults();
-            ToughAsNails.logger.info("TAN configuration restored to local values");
-        }
-    }
+public class SyncedConfigHandler {
+
+	@SubscribeEvent
+	public void onPlayerLogin(PlayerLoggedInEvent event) {
+		EntityPlayer player = event.player;
+		World world = player.world;
+
+		if (!world.isRemote) {
+			NBTTagCompound nbtOptions = new NBTTagCompound();
+
+			for (Entry<String, SyncedConfig.SyncedConfigEntry> entry : SyncedConfig.optionsToSync.entrySet()) {
+				nbtOptions.setString(entry.getKey(), entry.getValue().value);
+			}
+
+			IMessage message = new MessageSyncConfigs(nbtOptions);
+			PacketHandler.instance.sendTo(message, (EntityPlayerMP) player);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onWorldUnload(WorldEvent.Unload event) {
+		if (event.getWorld().isRemote && !Minecraft.getMinecraft().getConnection().getNetworkManager().isChannelOpen()) {
+			SyncedConfig.restoreDefaults();
+			ToughAsNails.logger.info("TAN configuration restored to local values");
+		}
+	}
 
 }

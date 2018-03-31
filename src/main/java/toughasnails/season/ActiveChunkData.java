@@ -3,67 +3,59 @@ package toughasnails.season;
 import net.minecraft.world.World;
 import toughasnails.util.BinaryHeapNode;
 
-public class ActiveChunkData extends BinaryHeapNode<Long>
-{
-    private final ChunkData data;
-    private final World world;
-    private long lastVisitTime;
+public class ActiveChunkData extends BinaryHeapNode<Long> {
 
-    ActiveChunkData(ChunkData data, World world)
-    {
-        this.data = data;
-        this.world = world;
-        this.lastVisitTime = 0;
+	private final ChunkData data;
 
-        data.setBelongingAC(this);
-    }
+	private final World world;
 
-    ChunkKey getKey()
-    {
-        return data.getKey();
-    }
+	private long lastVisitTime;
 
-    ChunkData getData()
-    {
-        return data;
-    }
+	ActiveChunkData(ChunkData data, World world) {
+		this.data = data;
+		this.world = world;
+		this.lastVisitTime = 0;
 
-    World getWorld()
-    {
-        return world;
-    }
+		data.setBelongingAC(this);
+	}
 
-    long getLastVisitTime()
-    {
-        return lastVisitTime;
-    }
+	ChunkKey getKey() {
+		return data.getKey();
+	}
 
-    public void detach()
-    {
-        data.setBelongingAC(null);
-    }
+	ChunkData getData() {
+		return data;
+	}
 
-    @Override
-    public int compareTo(BinaryHeapNode<Long> o)
-    {
-        return Long.compare(this.lastVisitTime, o.getNodeKey());
-    }
+	World getWorld() {
+		return world;
+	}
 
-    @Override
-    public Long getSmallerKey()
-    {
-        return -1L;
-    }
+	long getLastVisitTime() {
+		return lastVisitTime;
+	}
 
-    @Override
-    public void setNodeKey(Long key)
-    {
-        this.lastVisitTime = key;
-    }
+	public void detach() {
+		data.setBelongingAC(null);
+	}
 
-    @Override
-    public long getNodeKey()
-    {
-        return this.lastVisitTime;
-    }
+	@Override
+	public int compareTo(BinaryHeapNode<Long> o) {
+		return Long.compare(this.lastVisitTime, o.getNodeKey());
+	}
+
+	@Override
+	public Long getSmallerKey() {
+		return -1L;
+	}
+
+	@Override
+	public void setNodeKey(Long key) {
+		this.lastVisitTime = key;
+	}
+
+	@Override
+	public long getNodeKey() {
+		return this.lastVisitTime;
+	}
 }

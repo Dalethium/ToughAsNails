@@ -30,184 +30,157 @@ import toughasnails.api.ITANBlock;
 import toughasnails.api.item.TANItems;
 import toughasnails.item.ItemTANBlock;
 
-public class BlockRainCollector extends Block implements ITANBlock
-{
-    public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
-    
-    // implement ITANBlock
-    @Override
-    public Class<? extends ItemBlock> getItemClass() { return ItemTANBlock.class; }
-    @Override
-    public IProperty[] getPresetProperties() { return new IProperty[] {}; }
-    @Override
-    public IProperty[] getNonRenderingProperties() { return null; }
-    @Override
-    public String getStateName(IBlockState state) {return "";}
+public class BlockRainCollector extends Block implements ITANBlock {
 
-    public BlockRainCollector()
-    {
-        super(Material.IRON, MapColor.STONE);
-        this.setHardness(2.0F);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
-    }
+	public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
 
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
+	// implement ITANBlock
+	@Override
+	public Class<? extends ItemBlock> getItemClass() {
+		return ItemTANBlock.class;
+	}
 
-    @Override
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
-    }
-    
-    @SideOnly(Side.CLIENT)
-    @Override
-    public BlockRenderLayer getBlockLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
-    }
+	@Override
+	public IProperty[] getPresetProperties() {
+		return new IProperty[] {};
+	}
 
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        ItemStack heldItem = playerIn.getHeldItem(hand);
-        if (heldItem == null)
-        {
-            return true;
-        }
-        else
-        {
-            int i = ((Integer)state.getValue(LEVEL)).intValue();
-            Item item = heldItem.getItem();
+	@Override
+	public IProperty[] getNonRenderingProperties() {
+		return null;
+	}
 
-            if (item == Items.BUCKET)
-            {
-                if (i == 3 && !worldIn.isRemote)
-                {
-                    if (!playerIn.capabilities.isCreativeMode)
-                    {
-                        playerIn.getHeldItem(hand).setCount(playerIn.getHeldItem(hand).getCount() - 1);
+	@Override
+	public String getStateName(IBlockState state) {
+		return "";
+	}
 
-                        if (playerIn.getHeldItem(hand).isEmpty())
-                        {
-                            playerIn.setHeldItem(hand, new ItemStack(Items.WATER_BUCKET));
-                        }
-                        else if (!playerIn.inventory.addItemStackToInventory(new ItemStack(Items.WATER_BUCKET)))
-                        {
-                            playerIn.dropItem(new ItemStack(Items.WATER_BUCKET), false);
-                        }
-                    }
+	public BlockRainCollector() {
+		super(Material.IRON, MapColor.STONE);
+		this.setHardness(2.0F);
+		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
+	}
 
-                    //playerIn.addStat(StatList.CAULDRON_USED);
-                    this.setWaterLevel(worldIn, pos, state, 0);
-                }
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
 
-                return true;
-            }
-            else if (item == Items.GLASS_BOTTLE)
-            {
-                if (i > 0 && !worldIn.isRemote)
-                {
-                    if (!playerIn.capabilities.isCreativeMode)
-                    {
-                        ItemStack itemstack1 = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.WATER);
+	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false;
+	}
 
-                        playerIn.getHeldItem(hand).setCount(playerIn.getHeldItem(hand).getCount() - 1);
-                        if (playerIn.getHeldItem(hand).isEmpty())
-                        {
-                            playerIn.setHeldItem(hand, itemstack1);
-                        }
-                        else if (!playerIn.inventory.addItemStackToInventory(itemstack1))
-                        {
-                            playerIn.dropItem(itemstack1, false);
-                        }
-                        else if (playerIn instanceof EntityPlayerMP)
-                        {
-                            ((EntityPlayerMP)playerIn).sendContainerToPlayer(playerIn.inventoryContainer);
-                        }
-                    }
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT;
+	}
 
-                    this.setWaterLevel(worldIn, pos, state, i - 1);
-                }
+	@Override
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side,
+			float hitX, float hitY, float hitZ) {
+		ItemStack heldItem = playerIn.getHeldItem(hand);
+		if (heldItem == null) {
+			return true;
+		} else {
+			int i = ((Integer) state.getValue(LEVEL)).intValue();
+			Item item = heldItem.getItem();
 
-                return true;
-            }
-            else if (item == TANItems.canteen)
-            {
-            	if (i > 0 && !worldIn.isRemote)
-                {
-                    if (!playerIn.capabilities.isCreativeMode)
-                    {
-                        heldItem.setItemDamage(3);
-                    }
+			if (item == Items.BUCKET) {
+				if (i == 3 && !worldIn.isRemote) {
+					if (!playerIn.capabilities.isCreativeMode) {
+						playerIn.getHeldItem(hand).setCount(playerIn.getHeldItem(hand).getCount() - 1);
 
-                    this.setWaterLevel(worldIn, pos, state, i - 1);
-                }
-            	
-            	return true;
-            }
-            else
-            {
-            	return false;
-            }
-        }
-    }
+						if (playerIn.getHeldItem(hand).isEmpty()) {
+							playerIn.setHeldItem(hand, new ItemStack(Items.WATER_BUCKET));
+						} else if (!playerIn.inventory.addItemStackToInventory(new ItemStack(Items.WATER_BUCKET))) {
+							playerIn.dropItem(new ItemStack(Items.WATER_BUCKET), false);
+						}
+					}
 
-    public void setWaterLevel(World worldIn, BlockPos pos, IBlockState state, int level)
-    {
-        worldIn.setBlockState(pos, state.withProperty(LEVEL, Integer.valueOf(MathHelper.clamp(level, 0, 3))), 2);
-        worldIn.updateComparatorOutputLevel(pos, this);
-    }
+					// playerIn.addStat(StatList.CAULDRON_USED);
+					this.setWaterLevel(worldIn, pos, state, 0);
+				}
 
-    @Override
-    public void fillWithRain(World worldIn, BlockPos pos)
-    {
-    	if (worldIn.rand.nextInt(4) == 1)
-        {
-	        float f = worldIn.getBiome(pos).getFloatTemperature(pos);
-	
-	        if (worldIn.getBiomeProvider().getTemperatureAtHeight(f, pos.getY()) >= 0.15F)
-	        {
-	            IBlockState iblockstate = worldIn.getBlockState(pos);
-	
-	            if (((Integer)iblockstate.getValue(LEVEL)).intValue() < 3)
-	            {
-	                worldIn.setBlockState(pos, iblockstate.cycleProperty(LEVEL), 2);
-	            }
-	        }
-        }
-    }
+				return true;
+			} else if (item == Items.GLASS_BOTTLE) {
+				if (i > 0 && !worldIn.isRemote) {
+					if (!playerIn.capabilities.isCreativeMode) {
+						ItemStack itemstack1 = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.WATER);
 
-    @Override
-    public boolean hasComparatorInputOverride(IBlockState state)
-    {
-        return true;
-    }
+						playerIn.getHeldItem(hand).setCount(playerIn.getHeldItem(hand).getCount() - 1);
+						if (playerIn.getHeldItem(hand).isEmpty()) {
+							playerIn.setHeldItem(hand, itemstack1);
+						} else if (!playerIn.inventory.addItemStackToInventory(itemstack1)) {
+							playerIn.dropItem(itemstack1, false);
+						} else if (playerIn instanceof EntityPlayerMP) {
+							((EntityPlayerMP) playerIn).sendContainerToPlayer(playerIn.inventoryContainer);
+						}
+					}
 
-    @Override
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos)
-    {
-        return ((Integer)blockState.getValue(LEVEL)).intValue();
-    }
+					this.setWaterLevel(worldIn, pos, state, i - 1);
+				}
 
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(LEVEL, Integer.valueOf(meta));
-    }
+				return true;
+			} else if (item == TANItems.canteen) {
+				if (i > 0 && !worldIn.isRemote) {
+					if (!playerIn.capabilities.isCreativeMode) {
+						heldItem.setItemDamage(3);
+					}
 
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        return ((Integer)state.getValue(LEVEL)).intValue();
-    }
+					this.setWaterLevel(worldIn, pos, state, i - 1);
+				}
 
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, new IProperty[] {LEVEL});
-    }
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public void setWaterLevel(World worldIn, BlockPos pos, IBlockState state, int level) {
+		worldIn.setBlockState(pos, state.withProperty(LEVEL, Integer.valueOf(MathHelper.clamp(level, 0, 3))), 2);
+		worldIn.updateComparatorOutputLevel(pos, this);
+	}
+
+	@Override
+	public void fillWithRain(World worldIn, BlockPos pos) {
+		if (worldIn.rand.nextInt(4) == 1) {
+			float f = worldIn.getBiome(pos).getFloatTemperature(pos);
+
+			if (worldIn.getBiomeProvider().getTemperatureAtHeight(f, pos.getY()) >= 0.15F) {
+				IBlockState iblockstate = worldIn.getBlockState(pos);
+
+				if (((Integer) iblockstate.getValue(LEVEL)).intValue() < 3) {
+					worldIn.setBlockState(pos, iblockstate.cycleProperty(LEVEL), 2);
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride(IBlockState state) {
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+		return ((Integer) blockState.getValue(LEVEL)).intValue();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return this.getDefaultState().withProperty(LEVEL, Integer.valueOf(meta));
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return ((Integer) state.getValue(LEVEL)).intValue();
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, new IProperty[] { LEVEL });
+	}
 }

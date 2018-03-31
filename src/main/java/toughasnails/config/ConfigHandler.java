@@ -17,50 +17,39 @@ import toughasnails.core.ToughAsNails;
 
 import java.io.File;
 
-public abstract class ConfigHandler
-{
-    public Configuration config;
+public abstract class ConfigHandler {
 
-    protected ConfigHandler(File configFile)
-    {
-        config = new Configuration(configFile);
-        loadConfiguration();
+	public Configuration config;
 
-        MinecraftForge.EVENT_BUS.register(this);
-    }
+	protected ConfigHandler(File configFile) {
+		config = new Configuration(configFile);
+		loadConfiguration();
 
-    protected abstract void loadConfiguration();
+		MinecraftForge.EVENT_BUS.register(this);
+	}
 
-    protected <T> void addSyncedValue(ISyncedOption option, T defaultValue, String category, String comment, T... args)
-    {
-        String value = "";
+	protected abstract void loadConfiguration();
 
-        if (defaultValue instanceof String)
-        {
-            value = config.getString(option.getOptionName(), category, defaultValue.toString(), comment);
-        }
-        else if (defaultValue instanceof Integer)
-        {
-            value = "" + config.getInt(option.getOptionName(), category, (Integer)defaultValue, (Integer)args[0], (Integer)args[1], comment);
-        }
-        else if (defaultValue instanceof Boolean)
-        {
-            value = "" + config.getBoolean(option.getOptionName(), category, (Boolean)defaultValue, comment);
-        }
-        else if (defaultValue instanceof Float)
-        {
-            value = "" + config.getFloat(option.getOptionName(), category, (Float)defaultValue, (Float)args[0], (Float)args[1], comment);
-        }
+	protected <T> void addSyncedValue(ISyncedOption option, T defaultValue, String category, String comment, T... args) {
+		String value = "";
 
-        SyncedConfig.addOption(option, value);
-    }
+		if (defaultValue instanceof String) {
+			value = config.getString(option.getOptionName(), category, defaultValue.toString(), comment);
+		} else if (defaultValue instanceof Integer) {
+			value = "" + config.getInt(option.getOptionName(), category, (Integer) defaultValue, (Integer) args[0], (Integer) args[1], comment);
+		} else if (defaultValue instanceof Boolean) {
+			value = "" + config.getBoolean(option.getOptionName(), category, (Boolean) defaultValue, comment);
+		} else if (defaultValue instanceof Float) {
+			value = "" + config.getFloat(option.getOptionName(), category, (Float) defaultValue, (Float) args[0], (Float) args[1], comment);
+		}
 
-    @SubscribeEvent
-    public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
-    {
-        if (event.getModID().equalsIgnoreCase(ToughAsNails.MOD_ID))
-        {
-            loadConfiguration();
-        }
-    }
+		SyncedConfig.addOption(option, value);
+	}
+
+	@SubscribeEvent
+	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if (event.getModID().equalsIgnoreCase(ToughAsNails.MOD_ID)) {
+			loadConfiguration();
+		}
+	}
 }
